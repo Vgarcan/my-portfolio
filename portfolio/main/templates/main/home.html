@@ -1,0 +1,446 @@
+{% extends "base.html" %} 
+{% load static %} 
+
+{% comment %} 
+Set the name of the page 
+{% endcomment %} 
+{% block page_title %} 
+My Portfolio | Ineedtohirethisguy.com 
+{% endblock page_title %} 
+
+{% comment %} 
+Inject extra links into the page header 
+{% endcomment %} 
+{% block extra_head %} 
+{% endblock extra_head %}
+
+{% comment %} 
+CSS tag injection 
+{% endcomment %} 
+{% block css_inpage %} 
+{% endblock css_inpage %} 
+
+{% comment %} 
+Inject HTML for the content 
+{% endcomment %} 
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero container-fluid " id="intro-header">
+    <video autoplay muted loop id="bg-video">
+        <source src="{% static 'videos/code-vid-01.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="row align-items-center justify-content-center">
+
+        <!-- Tarjeta de presentación -->
+        <div class="card text-light p-4 shadow-lg mt-3" id="visit-card">
+            <div class="d-flex flex-column align-items-center">
+                <img src="{% static 'imgs/portrait-me.jpeg' %}" alt="Such a handsome boy" class="rounded-circle mb-3">
+                <h2 class="card-title mb-3">Victor G.C.</h2>
+                <h3 class="card-subtitle mb-4">Web Developer</h3>
+                <blockquote class="card-text mb-4">"With coffee by my side, your problems won’t survive."</blockquote>
+                <div class="d-flex gap-3" id="social-links">
+                    <a href="https://www.linkedin.com/in/vgc89/" target="_blank">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/Vgarcan" target="_blank">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                </div>
+                <a href="path-to-your-resume.pdf" class="btn btn-primary btn-lg mt-4" download>Download Resume</a>
+            </div>
+        </div>
+        <div class="container text-center mt-3">
+            <h2 class="display-4">Why Hire Me?</h2>
+            <p class="lead">I'm Victor GC (a.k.a Xema), a web developer passionate about building your next great idea.</p>
+            <a href="#portfolio" class="btn btn-light btn-lg mt-3">See My Work</a>
+        </div>
+    </div>
+</div>
+
+<!-- About Me Section -->
+<section id="about" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4 fs-1 fw-bolder">About Me</h2>
+        <hr class="w-50 mx-auto">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <p>
+                    Hello! I’m Victor GC, a passionate web developer with a proven dedication to mastering the art of creating innovative digital solutions. My path into the world of web development began with curiosity and has grown into a career fueled by creativity, problem-solving,
+                    and technical excellence.
+                </p>
+                <br>
+                <p>
+                    I specialise in technologies like <strong>Python, Django, JavaScript, and Bootstrap</strong>, building fast, responsive, and user-centric applications tailored to the unique needs of every project. Beyond web development, I am also
+                    deeply interested in cloud computing and server administration, constantly honing my skills with platforms like <strong>AWS</strong> and <strong>Microsoft Azure</strong>.
+                </p>
+            </div>
+        </div>
+        <div class="row mt-5 h-100">
+            <h2 class="text-center mb-4">My Approach</h2>
+            <img class="col-md-6 my-1" id="lapdog" src="{% static 'imgs/lapdog-alpha.png' %}" alt="">
+            <div class="col-md-6 my-3 d-flex flex-column align-items-center justify-content-center text-center">
+                <p>
+                    My approach combines technical expertise, creativity, and a deep understanding of client needs. By prioritising <strong>clear communication</strong> and <strong>active collaboration</strong>, I ensure that every project is aligned
+                    with the client’s vision and adheres to industry best practices.
+                </p>
+                <br>
+                <p>
+                    From initial concept to final deployment, I focus on delivering scalable, efficient, and impactful solutions that empower businesses and individuals to achieve their goals.
+                </p>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <h2 class="text-center">Core Values</h2>
+            <div id="coreValuesCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- Slide 1 -->
+                    <div class="carousel-item my-4 active">
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 my-3">
+                                <div class="card h-100 text-center border-0 shadow">
+                                    <div class="card-body">
+                                        <i class="fa fa-code fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">Clean Code</h5>
+                                        <p class="card-text">Writing clean, maintainable, and scalable code for the future.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 my-3">
+                                <div class="card h-100 text-center border-0 shadow">
+                                    <div class="card-body">
+                                        <i class="fa fa-comments fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">Clear Communication</h5>
+                                        <p class="card-text">Ensuring clear and consistent communication at every step.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="carousel-item my-4">
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 my-3">
+                                <div class="card h-100 text-center border-0 shadow">
+                                    <div class="card-body">
+                                        <i class="fa fa-search fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">Attention to Detail</h5>
+                                        <p class="card-text">Focusing on even the smallest details to deliver perfection.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 my-3">
+                                <div class="card h-100 text-center border-0 shadow">
+                                    <div class="card-body">
+                                        <i class="fa fa-graduation-cap fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">Continuous Learning</h5>
+                                        <p class="card-text">Constantly improving and growing to stay ahead in technology.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Carousel Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#coreValuesCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#coreValuesCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <h4>What Drives Me</h4>
+                <p>Technology is ever-changing, and I thrive on staying ahead of the curve. I’m motivated by the challenge of learning new tools and techniques to build scalable, efficient, and impactful digital experiences.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Section -->
+<section id="portfolio" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4 bg-primary rounded-pill">Portfolio</h2>
+        <div class="row">
+            <!-- DreamsReader  -->
+            <div class="col-md-4 mb-3">
+                <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
+                    <img src="{% static 'imgs/projs/dreamsreader-pic.png' %}" class="card-img-top" alt="Project 1">
+                    <div class="card-body">
+                        <h5 class="card-title">DreamsReader</h5>
+                        <p class="card-text">Static App for a platform that allows users to explore and share their dreams </p>
+                        <br>
+                        <div class="container">
+                            <a href="https://ambitious-bush-0d5afce1e.4.azurestaticapps.net/" class="btn btn-primary my-2" target="_blank">View Project</a>
+                            <a href="https://github.com/Vgarcan/CodeInstitute-proj01" class="btn btn-secondary my-2" target="_blank">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- LimonXemo -->
+            <div class="col-md-4 mb-3">
+                <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
+                    <img src="{% static 'imgs/projs/limonxemo-pic.png' %}" class="card-img-top" alt="Project 2">
+                    <div class="card-body">
+                        <h5 class="card-title">LimonXemo</h5>
+                        <p class="card-text">My personal Music Player created with JavaScript.</p>
+                        <br>
+                        <div class="container">
+                            <a href="https://vgarcan.github.io/CodeInstitute-proj02/" class="btn btn-primary my-2" target="_blank">View Project</a>
+                            <a href="https://github.com/Vgarcan/CodeInstitute-proj02" class="btn btn-secondary my-2" target="_blank">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- XemiJobs -->
+            <div class="col-md-4 mb-3">
+                <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
+                    <img src="{% static 'imgs/projs/xemijobs-pic.png' %}" class="card-img-top" alt="Project 3">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">XemiJobs</h5>
+                        <p class="card-text">A job search platform designed to connect employers with potential candidates..</p>
+                        <br>
+                        <div class="container">
+                            <a href="https://xemijobs-616b41a185c0.herokuapp.com/" class="btn btn-primary my-2" target="_blank">View Project</a>
+                            <a href="https://github.com/Vgarcan/CodeInstitute-proj03-v002" class="btn btn-secondary my-2" target="_blank">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- skills -->
+<section id="skills" class="py-5 bg-secondary text-light">
+    <div class="container-fluid text-center">
+        <h2 class="mb-4">Skills</h2>
+        <div class="slider-container py-4">
+            <div class="slider" id="slider">
+                <!-- Repite las cartas para simular continuidad -->
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-code fa-3x text-danger mb-3"></i>
+                        <h4 class="card-title">Frontend Development</h4>
+                        <p class="card-text">HTML, CSS, Bootstrap, JavaScript (ES6)</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-server fa-3x text-warning mb-3"></i>
+                        <h4 class="card-title">Backend Development</h4>
+                        <p class="card-text">Python, Flask, Django, REST API</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-cloud fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">API & Web Scraping</h4>
+                        <p class="card-text">API Integration, Selenium, BeautifulSoup</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-database fa-3x text-success mb-3"></i>
+                        <h4 class="card-title">Databases</h4>
+                        <p class="card-text">SQL Managers (MySQL, PostgresSQL, MongoDB, etc)</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-cloud fa-3x text-info mb-3"></i>
+                        <h4 class="card-title">Cloud & DevOps</h4>
+                        <p class="card-text">Microsoft Azure Fundamentals (AZ-900), AWS CloudFormation</p>
+                    </div>
+                </div>
+                <!-- Duplicamos las cartas para continuidad -->
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-code fa-3x text-danger mb-3"></i>
+                        <h4 class="card-title">Frontend Development</h4>
+                        <p class="card-text">HTML, CSS, Bootstrap, JavaScript (ES6)</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm">
+                    <div class="card-body">
+                        <i class="fa fa-server fa-3x text-warning mb-3"></i>
+                        <h4 class="card-title">Backend Development</h4>
+                        <p class="card-text">Python, Flask, Django, REST API</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- TimeLine Section -->
+<section id="studies" class="text-center">
+    <h2 class="m-4">Studies</h2>
+    <hr class="w-50 mx-auto">
+    <div class="container-fluid py-3">
+        <div class="main-timeline-4 text-light">
+
+            <!-- 2024 - Act -->
+            <div class="timeline-4 left-4">
+                <div class="card gradient-custom">
+                    <div class="card-body p-4">
+                        <i class="fas fa-laptop-code fa-2x mb-3"></i>
+                        <h4>2024 - Act</h4>
+                        <p class="small text-white-50 mb-4">CAVC & CodeInstitute</p>
+                        <p>Level 5 Diploma in Web Application Development (PLA)<br> - Frontend: HTML, CSS, JavaScript, Interactive Dev, Testing (JEST)<br> - Backend: Python, Flask, Django, DBs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2023 -->
+            <div class="timeline-4 right-4">
+                <div class="card gradient-custom-4">
+                    <div class="card-body p-4">
+                        <i class="fas fa-cloud fa-2x mb-3"></i>
+                        <h4>2023</h4>
+                        <p class="small text-white-50 mb-4">CAVC</p>
+                        <p>Back-End Development L3 (Bootcamp)<br> - Python<br> - SQL<br> - Microsoft Azure Fundamentals (AZ-900)<br> - AGILE: SCRUM Developer
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2023 -->
+            <div class="timeline-4 left-4">
+                <div class="card gradient-custom">
+                    <div class="card-body p-4">
+                        <i class="fas fa-cloud fa-2x mb-3"></i>
+                        <h4>2023</h4>
+                        <p class="small text-white-50 mb-4">The Knowledge Academy & Iungo Solutions</p>
+                        <p>AWS CloudFormation<br> AWS Cloud Practitioner
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2022 -->
+            <div class="timeline-4 right-4">
+                <div class="card gradient-custom-4">
+                    <div class="card-body p-4">
+                        <i class="fas fa-database fa-2x mb-3"></i>
+                        <h4>2022</h4>
+                        <p class="small text-white-50 mb-4">CAVC</p>
+                        <p>Introduction to Python<br> Database Management with Access
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2020 - Act -->
+            <div class="timeline-4 left-4">
+                <div class="card gradient-custom">
+                    <div class="card-body p-4">
+                        <i class="fas fa-graduation-cap fa-2x mb-3"></i>
+                        <h4>2020 - Act</h4>
+                        <p class="small text-white-50 mb-4">UDEMY</p>
+                        <p>Courses Completed:<br> - Python Programming (Dr. Angela Yu)<br> - Web Development (HTML, CSS, JS, Bootstrap, SQL)<br> - Django<br> - SQL Manager with MySQL
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Testimonials</h2>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card shadow border-0 mb-4 h-100">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                        <p class="card-text">"If you don't hire him, your competitors definitely will. Don't miss this chance!"</p>
+                        <h4 class="blockquote-footer mt-3">Imaginary CEO</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card shadow border-0 mb-4 h-100">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                        <p class="card-text">"His code is cleaner than my kitchen after spring cleaning."</p>
+                        <h4 class="blockquote-footer mt-3">Enthusiastic Client</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Contact Section -->
+<section id="contact" class="py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Contact</h2>
+        <p>Interested in working together? Let's talk!</p>
+        {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+        {% elif error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="POST" class="row g-3 justify-content-center">
+            {% csrf_token %}
+            <div class="col-md-4">
+                {{ form.email }}
+            </div>
+            <div class="col-md-4">
+                {{ form.name }}
+            </div>
+            <div class="col-md-4">
+                {{ form.subject }}
+            </div>
+            <div class="col-12">
+                {{ form.body }}
+            </div>
+            <div class="col-12">
+                {{form.captcha}}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </div>
+        </form>
+        
+    </div>
+</section>
+
+{% endblock content %} 
+
+
+{% comment %} 
+To the bottom of the body tag 
+{% endcomment %} 
+{% block extra_body %} 
+{% endblock extra_body %} 
+
+
+{% comment %} 
+JS tag injection 
+{% endcomment %} 
+{% block js_inpage %}
+<script>
+    const slider = document.getElementById('slider');
+
+    slider.addEventListener('mouseenter', () => {
+        slider.style.animationPlayState = 'paused'; // Pausa la animación
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        slider.style.animationPlayState = 'running'; // Reanuda la animación
+    });
+</script>
+{% endblock js_inpage %}

@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="I'm [Your Name], a professional web developer. Discover why you should hire me.">
+    <meta name="author" content="[Your Name]">
+    <title>ineedtohirethisguy.com</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">ineedtohirethisguy.com</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#about">About Me</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero d-flex align-items-center justify-content-center" style="height: 100vh;">
+        <div class="container text-center">
+            <h1 class="display-4">Why Hire Me?</h1>
+            <p class="lead">I'm [Your Name], a web developer passionate about building your next great idea.</p>
+            <a href="#portfolio" class="btn btn-light btn-lg mt-3">See My Work</a>
+        </div>
+    </header>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4">About Me</h2>
+            <p class="mb-0">I’m a web developer with expertise in modern technologies like Python, Django, JavaScript, and Bootstrap. I love solving problems and delivering creative solutions for my clients.</p>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Portfolio</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="project1.jpg" class="card-img-top" alt="Project 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Cookbook App</h5>
+                            <p class="card-text">A coding recipe platform built with Django and Bootstrap.</p>
+                            <a href="#" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="project2.jpg" class="card-img-top" alt="Project 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Landing Page Pro</h5>
+                            <p class="card-text">A responsive landing page for a startup.</p>
+                            <a href="#" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="project3.jpg" class="card-img-top" alt="Project 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Task Manager</h5>
+                            <p class="card-text">A web app to organise daily tasks efficiently.</p>
+                            <a href="#" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-5 bg-secondary text-light">
+        <div class="container text-center">
+            <h2 class="mb-4">Skills</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>Frontend</h3>
+                    <p>HTML, CSS, JavaScript, Bootstrap</p>
+                </div>
+                <div class="col-md-4">
+                    <h3>Backend</h3>
+                    <p>Python, Django, Flask</p>
+                </div>
+                <div class="col-md-4">
+                    <h3>Tools</h3>
+                    <p>Git, SQL, Selenium</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4">Testimonials</h2>
+            <blockquote class="blockquote">
+                <p>"If you don't hire him, your competitors definitely will. Don't miss this chance!"</p>
+                <footer class="blockquote-footer">Imaginary CEO</footer>
+            </blockquote>
+            <blockquote class="blockquote">
+                <p>"His code is cleaner than my kitchen after spring cleaning."</p>
+                <footer class="blockquote-footer">Enthusiastic Client</footer>
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Contact</h2>
+            <p>Interested in working together? Let's talk!</p>
+            <form class="row g-3 justify-content-center">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Your Name" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="email" class="form-control" placeholder="Your Email" required>
+                </div>
+                <div class="col-12">
+                    <textarea class="form-control" rows="4" placeholder="Your Message"></textarea>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>© 2024 [Your Name] - ineedtohirethisguy.com</p>
+        <p><small>Designed and built by me. If you find a bug, it’s there for testing your attention to detail.</small></p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
