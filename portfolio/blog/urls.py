@@ -21,5 +21,11 @@ from . import views
 app_name = 'blog'
 
 urlpatterns = [
+    # Ruta para la lista de blogs
     path('', views.blogs_list, name='blogs_list'),
+    # Ruta para el detalle del blog
+    path('<slug:slug>/', views.blog_detail, name='blog_detail'),
+    path('category/<slug:slug>/', views.category_detail,
+         name='category_detail'),  # Ruta para el detalle de la categoría
+    path('search/', views.search, name='search'),  # Ruta para la búsqueda
 ]

@@ -10,13 +10,13 @@ def blogs_list(request):
     """
 
     # Fetch all blog posts from the database
-    posts = Post.objects.all('-created_on')
+    posts = Post.objects.all().order_by('-created_on')
 
     # Fetch all categories from the database
     categories = Category.objects.all()
 
     # Render the blog list template with the fetched data
-    return render(request, 'blogs/list.html', {
+    return render(request, 'blog/list.html', {
         'posts': posts,
         'categories': categories,
     })
@@ -35,7 +35,7 @@ def blog_detail(request, slug):
     comments = Comment.objects.filter(post=post)
 
     # Render the blog detail template with the fetched data
-    return render(request, 'blogs/detail.html', {
+    return render(request, 'blog/detail.html', {
         'post': post,
         'comments': comments,
     })
@@ -63,7 +63,7 @@ def category_detail(request, slug):
     posts = Post.objects.filter(category=category)
 
     # Render the category detail template with the fetched data
-    return render(request, 'blogs/category_detail.html', {
+    return render(request, 'blog/category_detail.html', {
         'category': category,
         'posts': posts,
     })
@@ -90,7 +90,7 @@ def search(request):
     posts = Post.objects.filter(title__icontains=query)
 
     # Render the search results template with the fetched data
-    return render(request, 'blogs/search_results.html', {
+    return render(request, 'blog/search_results.html', {
         'query': query,
         'posts': posts,
     })

@@ -25,23 +25,15 @@ My Blogs
 {% endcomment %}
 {% block content %}
 <div class="container py-5">
-    <h1 class="text-center mb-4">Blog Posts</h1>
-
-    <!-- Categories -->
-    <div class="mb-4">
-        <h2 class="h4">Categories</h2>
-        <div class="d-flex flex-wrap gap-3">
-            {% if categories %}
-                {% for category in categories %}
-                    <a href="{% url 'category_detail' category.slug %}" class="btn btn-outline-primary">
-                        {{ category.name }}
-                    </a>
-                {% endfor %}
-            {% else %}
-                <p class="text-muted">No categories available.</p>
-            {% endif %}
-        </div>
-    </div>
+    <!-- Category Title -->
+    <h1 class="text-center mb-4">{{ category.name }}</h1>
+    <p class="text-center text-muted">
+        {% if posts %}
+            {{ posts.count }} blog posts in this category.
+        {% else %}
+            No blog posts in this category yet.
+        {% endif %}
+    </p>
 
     <!-- Blog Posts -->
     <div class="row">
@@ -49,7 +41,9 @@ My Blogs
             {% for post in posts %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
-                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ post.title }}</h5>
                             <p class="card-text text-muted">{{ post.summary|truncatewords:20 }}</p>
@@ -63,13 +57,13 @@ My Blogs
             {% endfor %}
         {% else %}
             <div class="col-12">
-                <p class="text-center text-muted">No blog posts available.</p>
+                <p class="text-center text-muted">No blog posts available in this category.</p>
             </div>
         {% endif %}
     </div>
 </div>
-
 {% endblock content %}
+
 
 {% comment %}
  To the bottom of the body tag 
