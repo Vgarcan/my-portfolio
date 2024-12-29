@@ -33,19 +33,27 @@ def home(request):
 
             # Validate reCAPTCHA
             recaptcha_secret = os.getenv("RECAPTCHA_SECRET_KEY")
+            # This endpoint verifies if the Token generated in the back end is valid
             recaptcha_url = "https://www.google.com/recaptcha/api/siteverify"
             recaptcha_data = {
                 "secret": recaptcha_secret,
                 "response": recaptcha_response
             }
-
+            #! ### checks the response with the token
             try:
+                # Obtain the token verification response
                 recaptcha_validation = requests.post(
                     recaptcha_url, data=recaptcha_data).json()
                 print("reCAPTCHA Validation Results:",
                       recaptcha_validation)
+                # Example: reCAPTCHA Validation Results: {
+                #   'success': False,
+                #   'error-codes': ['timeout-or-duplicate']
+                # }
 
+                # If the reCAPTCHA validation fails, return an error message
                 if not recaptcha_validation.get("success"):
+                    # print the error type
                     print("reCAPTCHA Errors:",
                           recaptcha_validation.get("error-codes"))
                     print("Data sent to the reCAPTCHA's API:", recaptcha_data)
@@ -62,6 +70,7 @@ def home(request):
                     'form': form,
                     'error': "Could not validate reCAPTCHA. Please try again later."
                 })
+            #! ### checks the response with the token
 
             # Call the function to send email
             return send_email(request, name, email, subject, body)
