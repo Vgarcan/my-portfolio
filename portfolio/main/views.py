@@ -8,14 +8,13 @@ from .forms import ContactForm
 # Cargar las variables de entorno del archivo .env
 load_dotenv()
 
-# Vista principal para mostrar y procesar el formulario
-
 
 def home(request):
     if request.method == "POST":
+        # Create form object with data from POST request
         form = ContactForm(request.POST)
 
-        # Validar formulario
+        # validate Form
         if form.is_valid():
             print(">>> FORM IS VALID")
             name = form.cleaned_data['name']
@@ -32,7 +31,7 @@ def home(request):
                     ReCaptcha response: {recaptcha_response}
                     """)
 
-            # Validar reCAPTCHA
+            # Validate reCAPTCHA
             recaptcha_secret = os.getenv("RECAPTCHA_SECRET_KEY")
             recaptcha_url = "https://www.google.com/recaptcha/api/siteverify"
             recaptcha_data = {
@@ -43,14 +42,14 @@ def home(request):
             try:
                 recaptcha_validation = requests.post(
                     recaptcha_url, data=recaptcha_data).json()
-                print("Resultado de la validación reCAPTCHA:",
+                print("reCAPTCHA Validation Results:",
                       recaptcha_validation)
 
                 if not recaptcha_validation.get("success"):
-                    print("Errores de reCAPTCHA:",
+                    print("reCAPTCHA Errors:",
                           recaptcha_validation.get("error-codes"))
-                    print("Datos enviados a la API de reCAPTCHA:", recaptcha_data)
-                    print("Respuesta completa de la API:", recaptcha_validation)
+                    print("Data sent to the reCAPTCHA's API:", recaptcha_data)
+                    print("Complete API response:", recaptcha_validation)
 
                     return render(request, 'main/home.html', {
                         'form': form,
@@ -58,17 +57,17 @@ def home(request):
                     })
 
             except requests.RequestException as e:
-                print(f"Error en la conexión con reCAPTCHA API: {e}")
+                print(f"Connection ERROR with reCAPTCHA API: {e}")
                 return render(request, 'main/home.html', {
                     'form': form,
                     'error': "Could not validate reCAPTCHA. Please try again later."
                 })
 
-            # Llamar a la función para enviar el correo
+            # Call the function to send email
             return send_email(request, name, email, subject, body)
 
         else:
-            print("Errores del formulario:", form.errors)
+            print("Form Errors:", form.errors)
             return render(request, 'main/home.html', {
                 'form': form,
                 'error': "Please correct the errors in the form."
@@ -87,7 +86,7 @@ def home(request):
 
 
 def send_email(request, name, email, subject, body):
-    # Construir el mensaje
+    # Build the Message
     message = f"""
     You have a new contact form submission:
 
@@ -99,12 +98,14 @@ def send_email(request, name, email, subject, body):
     """
 
     try:
-        # Enviar el correo
+        # Send the email
         send_mail(
             subject=subject,
             message=message,
-            from_email=os.environ.get("EMAIL_HOST_USER"),  # Tu correo SMTP
-            recipient_list=[os.environ.get("EMAIL_HOST_USER")],  # Destinatario
+            # Your Address for the SMTP
+            from_email=os.environ.get("EMAIL_HOST_USER"),
+            # send to:
+            recipient_list=[os.environ.get("EMAIL_HOST_USER")],
             fail_silently=False,
         )
         return render(request, 'main/home.html', {

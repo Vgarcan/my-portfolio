@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% comment %}
+ Set the name of the page 
+{% endcomment %}
+{% block page_title %}
+My Blogs
+{% endblock page_title %}
+
+{% comment %}
+ Inject extra links into the page header
+{% endcomment %}
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% comment %}
+ CSS tag injection 
+{% endcomment %}
+{% block css_inpage %}
+{% endblock css_inpage %}
+
+{% comment %}
+ Inject HTML for the content 
+{% endcomment %}
+{% block content %}
+<div class="card">
+    <h2>Blog List</h2>
+    <p>This is the list.</p>
+</div>
+{% endblock content %}
+
+{% comment %}
+ To the bottom of the body tag 
+{% endcomment %}
+{% block extra_body %}
+{% endblock extra_body %}
+
+{% comment %}
+ JS tag injection 
+{% endcomment %}
+{% block js_inpage %}
+{% endblock js_inpage %}
