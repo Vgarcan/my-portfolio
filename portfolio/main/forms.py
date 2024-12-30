@@ -1,7 +1,8 @@
 from django import forms
-from django_recaptcha.fields import ReCaptchaField
 import os
 from dotenv import load_dotenv
+
+from turnstile.fields import TurnstileField
 
 load_dotenv()
 
@@ -29,4 +30,4 @@ class ContactForm(forms.Form):
         'required': True
     }))
 
-    captcha = ReCaptchaField()
+    turnstile = TurnstileField(theme='dark', size='normal')

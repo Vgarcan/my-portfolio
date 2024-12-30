@@ -4,6 +4,7 @@ charset-normalizer
 Django
 django-recaptcha
 idna
+pillow
 python-dotenv
 requests
 sqlparse

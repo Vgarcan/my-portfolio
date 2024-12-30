@@ -408,7 +408,7 @@ Inject HTML for the content
                 {{ form.body }}
             </div>
             <div class="col-12">
-                {{form.captcha}}
+                {{ form.turnstile }}
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Send Message</button>
@@ -442,5 +442,6 @@ JS tag injection
     slider.addEventListener('mouseleave', () => {
         slider.style.animationPlayState = 'running'; // Reanuda la animación
     });
+
 </script>
 {% endblock js_inpage %}

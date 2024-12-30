@@ -52,8 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Django reCaptcha
-    'django_recaptcha',
+    # CloudFlare TurnStile
+    'turnstile',
     # Program's apps:
     'main',
     'blog',
@@ -157,8 +157,31 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 
-RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_SITE_KEY")
-RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
+# > For development purposes no further configuration is required. By default, django-Turnstile will use dummy keys.
+# > For production, you’ll need to obtain your Turnstile site key and secret key and add them to you settings:
+TURNSTILE_SITEKEY = os.getenv("RECAPTCHA_SITE_KEY")
+TURNSTILE_SECRET = os.getenv("RECAPTCHA_SECRET_KEY")
 
-RECAPTCHA_DOMAIN = 'www.recaptcha.net'
-# SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+print(TURNSTILE_SITEKEY)
+print(TURNSTILE_SECRET)
+
+# If you need to, you can also override default turnstile endpoints:
+# TURNSTILE_JS_API_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+# TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+
+# You can also configure your Turnstile widget globally (see all options):
+# TURNSTILE_DEFAULT_CONFIG = {
+#     'onload': 'name_of_js_function',
+#     'render': 'explicit',
+#     'theme': 'dark',  # do not use data- prefix
+#     'size': 'compact',  # do not use data- prefix
+# }
+
+# Change default verification timeout:
+TURNSTILE_TIMEOUT = 5
+
+
+# # Use proxies:
+# TURNSTILE_PROXIES = {
+#     'http': 'http://127.0.0.1:8000',
+# }

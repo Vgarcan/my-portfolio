@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.shortcuts import render
+from django.http import HttpResponse
 import requests
 import os
 from dotenv import load_dotenv
@@ -10,72 +11,73 @@ load_dotenv()
 
 
 def home(request):
+    print(os.environ.get("TURNSTILE_SECRET"))
     if request.method == "POST":
-        # Create form object with data from POST request
+        # Crear el formulario con los datos enviados por POST
         form = ContactForm(request.POST)
+        turnstile_secret = os.environ.get("TURNSTILE_SECRET")
 
-        # validate Form
+        if not turnstile_secret:
+            print("Turnstile secret key is missing.")
+            return render(request, 'main/home.html', {
+                'form': form,
+                'error': "Server configuration error: missing Turnstile secret key."
+            })
+
+        # Validar el formulario
         if form.is_valid():
             print(">>> FORM IS VALID")
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             subject = form.cleaned_data['subject']
             body = form.cleaned_data['body']
-            recaptcha_response = request.POST.get("g-recaptcha-response")
 
             print(f"""
-                    Name: {name}
-                    Email: {email}
-                    Subject: {subject}
-                    Body: {body}
-                    ReCaptcha response: {recaptcha_response}
-                    """)
+                Name: {name}
+                Email: {email}
+                Subject: {subject}
+                Body: {body}
+            """)
 
-            # Validate reCAPTCHA
-            recaptcha_secret = os.getenv("RECAPTCHA_SECRET_KEY")
-            # This endpoint verifies if the Token generated in the back end is valid
-            recaptcha_url = "https://www.google.com/recaptcha/api/siteverify"
-            recaptcha_data = {
-                "secret": recaptcha_secret,
-                "response": recaptcha_response
-            }
-            #! ### checks the response with the token
-            try:
-                # Obtain the token verification response
-                recaptcha_validation = requests.post(
-                    recaptcha_url, data=recaptcha_data).json()
-                print("reCAPTCHA Validation Results:",
-                      recaptcha_validation)
-                # Example: reCAPTCHA Validation Results: {
-                #   'success': False,
-                #   'error-codes': ['timeout-or-duplicate']
-                # }
-
-                # If the reCAPTCHA validation fails, return an error message
-                if not recaptcha_validation.get("success"):
-                    # print the error type
-                    print("reCAPTCHA Errors:",
-                          recaptcha_validation.get("error-codes"))
-                    print("Data sent to the reCAPTCHA's API:", recaptcha_data)
-                    print("Complete API response:", recaptcha_validation)
-
-                    return render(request, 'main/home.html', {
-                        'form': form,
-                        'error': "Invalid reCAPTCHA. Please try again."
-                    })
-
-            except requests.RequestException as e:
-                print(f"Connection ERROR with reCAPTCHA API: {e}")
+            # Validar respuesta de Turnstile
+            turnstile_response = request.POST.get('cf-turnstile-response')
+            if not turnstile_response:
+                print("Turnstile response is missing.")
                 return render(request, 'main/home.html', {
                     'form': form,
-                    'error': "Could not validate reCAPTCHA. Please try again later."
+                    'error': "Turnstile response missing. Please try again."
                 })
-            #! ### checks the response with the token
 
-            # Call the function to send email
-            return send_email(request, name, email, subject, body)
+            # Enviar la solicitud a Turnstile
+            url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+            data = {
+                "secret": turnstile_secret,
+                "response": turnstile_response
+            }
+            response = requests.post(url, data=data)
+            result = response.json()
+            print("Turnstile API Response:", result)
+
+            if result.get("success"):
+                # Turnstile validó correctamente
+                send_email(request, name, email, subject, body)
+                return render(request, 'main/home.html', {
+                    'form': ContactForm(),  # Limpiar el formulario tras éxito
+                    'success': "Form submitted successfully!"
+                })
+            else:
+                # Fallo en Turnstile
+                error_message = "Failed Turnstile verification."
+                error_codes = result.get("error-codes", [])
+                if error_codes:
+                    error_message += f" Errors: {', '.join(error_codes)}"
+                return render(request, 'main/home.html', {
+                    'form': form,
+                    'error': error_message
+                })
 
         else:
+            # Errores en el formulario
             print("Form Errors:", form.errors)
             return render(request, 'main/home.html', {
                 'form': form,
@@ -83,15 +85,10 @@ def home(request):
             })
 
     else:
+        # GET request
         form = ContactForm()
 
-    return render(
-        request,
-        'main/home.html',
-        {
-            'form': form,
-        }
-    )
+    return render(request, 'main/home.html', {'form': form})
 
 
 def send_email(request, name, email, subject, body):
