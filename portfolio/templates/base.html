@@ -28,12 +28,14 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     
     {# EXTRA HEAD Injection #}
+    
     {% block extra_head %}
     {% endblock extra_head %}
     
     {# CSS INPAGE Injection #}
     {% block css_inpage %}
     {% endblock css_inpage %}
+    
 </head>
 <body>
     {# If ON overrides the whole Document  #}
@@ -76,6 +78,7 @@
         </footer>
 
         <!-- Bootstrap JS -->
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         {# Inject extra links #}
         {% block extra_body %}
@@ -83,6 +86,7 @@
         {# Script for in page JS #}
         {% block js_inpage %}
         {% endblock js_inpage %}
+        <script src="{% static 'js/dynamic-loader.js' %}"></script>
     {% endblock body %}
 </body>
 </html>

@@ -2,8 +2,6 @@ from django import forms
 import os
 from dotenv import load_dotenv
 
-from turnstile.fields import TurnstileField
-
 load_dotenv()
 
 
@@ -29,5 +27,3 @@ class ContactForm(forms.Form):
         'rows': 4,
         'required': True
     }))
-
-    turnstile = TurnstileField(theme='dark', size='normal')

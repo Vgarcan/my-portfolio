@@ -28,11 +28,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get(('DEBUG'), False)
+DEBUG = bool(os.environ.get(('DEBUG'), False))
+print(
+    f"DEBUG MODE: {DEBUG}",
+)
 
 ALLOWED_HOSTS = [
     'localhost',
     'ineedtohirethisguy.com',
+    'www.ineedtohirethisguy.com',
     '127.0.0.1',
     '192.168.2.199'
 ]
@@ -52,8 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # CloudFlare TurnStile
-    'turnstile',
     # Program's apps:
     'main',
     'blog',
@@ -61,6 +63,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -139,9 +142,23 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# STATIC SETTINGS FOR WHITENOISE
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_DIRS = [
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
     BASE_DIR / "static",
 ]
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -156,32 +173,36 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", True)
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+print(f"""
+      EMAIL_HOST: {EMAIL_HOST}
+      EMAIL_PORT: {EMAIL_PORT}
+      EMAIL_USE_TLS: {EMAIL_USE_TLS}
+      EMAIL_HOST_USER: {EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: {EMAIL_HOST_PASSWORD}
+      """)
+
 
 # > For development purposes no further configuration is required. By default, django-Turnstile will use dummy keys.
 # > For production, you’ll need to obtain your Turnstile site key and secret key and add them to you settings:
-TURNSTILE_SITEKEY = os.getenv("RECAPTCHA_SITE_KEY")
-TURNSTILE_SECRET = os.getenv("RECAPTCHA_SECRET_KEY")
+TURNSTILE_SITEKEY = os.getenv("TURNSTILE_SITEKEY")
+TURNSTILE_SECRET = os.getenv("TURNSTILE_SECRET")
 
-print(TURNSTILE_SITEKEY)
-print(TURNSTILE_SECRET)
+print(f"""
+      TURNSTILE_SITEKEY: {TURNSTILE_SITEKEY}
+      TURNSTILE_SECRET: {TURNSTILE_SECRET}
+      """)
 
 # If you need to, you can also override default turnstile endpoints:
-# TURNSTILE_JS_API_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
-# TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
-
-# You can also configure your Turnstile widget globally (see all options):
-# TURNSTILE_DEFAULT_CONFIG = {
-#     'onload': 'name_of_js_function',
-#     'render': 'explicit',
-#     'theme': 'dark',  # do not use data- prefix
-#     'size': 'compact',  # do not use data- prefix
-# }
+TURNSTILE_JS_API_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
 # Change default verification timeout:
 TURNSTILE_TIMEOUT = 5
 
+if DEBUG:
+    STORAGES = {
 
-# # Use proxies:
-# TURNSTILE_PROXIES = {
-#     'http': 'http://127.0.0.1:8000',
-# }
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }

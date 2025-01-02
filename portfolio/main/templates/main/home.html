@@ -12,6 +12,7 @@ My Portfolio | Ineedtohirethisguy.com
 Inject extra links into the page header 
 {% endcomment %} 
 {% block extra_head %} 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {% endblock extra_head %}
 
 {% comment %} 
@@ -285,7 +286,7 @@ Inject HTML for the content
     <h2 class="m-4">Studies</h2>
     <hr class="w-50 mx-auto">
     <div class="container-fluid py-3">
-        <div class="main-timeline-4 text-light">
+        <div class="container main-timeline-4 text-light px-4">
 
             <!-- 2024 - Act -->
             <div class="timeline-4 left-4">
@@ -408,7 +409,7 @@ Inject HTML for the content
                 {{ form.body }}
             </div>
             <div class="col-12">
-                {{ form.turnstile }}
+                <div class="cf-turnstile" data-sitekey="{{ sitekeyTurnstile }}"></div>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Send Message</button>

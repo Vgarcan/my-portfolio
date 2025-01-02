@@ -1,26 +1,40 @@
 from django.core.mail import send_mail
 from django.shortcuts import render
-from django.http import HttpResponse
-import requests
 import os
-from dotenv import load_dotenv
 from .forms import ContactForm
+from django.conf import settings
 
-# Cargar las variables de entorno del archivo .env
-load_dotenv()
+from django.conf import settings
+# Asegúrate de que esta función esté en un archivo utils.py o similar
+from _core.utils import turnstile_validation
 
 
 def home(request):
-    print(os.environ.get("TURNSTILE_SECRET"))
+    """
+    View function for home page
+    """
+    # Instancing the variables for TURNSTILE
+    turnstile_sitekey = settings.TURNSTILE_SITEKEY
+    turnstile_secret = settings.TURNSTILE_SECRET
+    turnstile_verify_url = settings.TURNSTILE_VERIFY_URL
+    turnstile_js_api_url = settings.TURNSTILE_JS_API_URL
+
+    # Imprimir los detalles de Turnstile para depuración
+    print(f"""
+          Turnstile Sitekey: {turnstile_sitekey}
+          Turnstile Secret: {turnstile_secret}
+          Turnstile Verify URL: {turnstile_verify_url}
+          """)
+
     if request.method == "POST":
         # Crear el formulario con los datos enviados por POST
         form = ContactForm(request.POST)
-        turnstile_secret = os.environ.get("TURNSTILE_SECRET")
 
         if not turnstile_secret:
             print("Turnstile secret key is missing.")
             return render(request, 'main/home.html', {
                 'form': form,
+                'sitekeyTurnstile': turnstile_sitekey,
                 'error': "Server configuration error: missing Turnstile secret key."
             })
 
@@ -39,41 +53,21 @@ def home(request):
                 Body: {body}
             """)
 
-            # Validar respuesta de Turnstile
-            turnstile_response = request.POST.get('cf-turnstile-response')
-            if not turnstile_response:
-                print("Turnstile response is missing.")
-                return render(request, 'main/home.html', {
-                    'form': form,
-                    'error': "Turnstile response missing. Please try again."
-                })
-
-            # Enviar la solicitud a Turnstile
-            url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
-            data = {
-                "secret": turnstile_secret,
-                "response": turnstile_response
-            }
-            response = requests.post(url, data=data)
-            result = response.json()
-            print("Turnstile API Response:", result)
-
-            if result.get("success"):
+            # Validar Turnstile usando la función simplificada
+            if turnstile_validation(request, turnstile_secret, turnstile_verify_url):
                 # Turnstile validó correctamente
                 send_email(request, name, email, subject, body)
                 return render(request, 'main/home.html', {
                     'form': ContactForm(),  # Limpiar el formulario tras éxito
+                    'sitekeyTurnstile': turnstile_sitekey,
                     'success': "Form submitted successfully!"
                 })
             else:
                 # Fallo en Turnstile
-                error_message = "Failed Turnstile verification."
-                error_codes = result.get("error-codes", [])
-                if error_codes:
-                    error_message += f" Errors: {', '.join(error_codes)}"
                 return render(request, 'main/home.html', {
                     'form': form,
-                    'error': error_message
+                    'sitekeyTurnstile': turnstile_sitekey,
+                    'error': "Failed Turnstile verification. Please try again."
                 })
 
         else:
@@ -81,6 +75,7 @@ def home(request):
             print("Form Errors:", form.errors)
             return render(request, 'main/home.html', {
                 'form': form,
+                'sitekeyTurnstile': turnstile_sitekey,
                 'error': "Please correct the errors in the form."
             })
 
@@ -88,7 +83,10 @@ def home(request):
         # GET request
         form = ContactForm()
 
-    return render(request, 'main/home.html', {'form': form})
+    return render(request, 'main/home.html', {
+        'form': form,
+        'sitekeyTurnstile': turnstile_sitekey,
+    })
 
 
 def send_email(request, name, email, subject, body):
