@@ -1,34 +1,11 @@
-{% extends "base.html" %} 
-{% load static %} 
-
-{% comment %} 
-Set the name of the page 
-{% endcomment %} 
-{% block page_title %} 
-My Portfolio | Ineedtohirethisguy.com 
-{% endblock page_title %} 
-
-{% comment %} 
-Inject extra links into the page header 
-{% endcomment %} 
-{% block extra_head %} 
+{% extends "base.html" %} {% load static %} {% comment %} Set the name of the page {% endcomment %} {% block page_title %} My Portfolio | Ineedtohirethisguy.com {% endblock page_title %} {% comment %} Inject extra links into the page header {% endcomment
+%} {% block extra_head %}
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-{% endblock extra_head %}
-
-{% comment %} 
-CSS tag injection 
-{% endcomment %} 
-{% block css_inpage %} 
-{% endblock css_inpage %} 
-
-{% comment %} 
-Inject HTML for the content 
-{% endcomment %} 
-{% block content %}
+{% endblock extra_head %} {% comment %} CSS tag injection {% endcomment %} {% block css_inpage %} {% endblock css_inpage %} {% comment %} Inject HTML for the content {% endcomment %} {% block content %}
 
 <!-- Hero Section -->
 <div class="hero container-fluid " id="intro-header">
-    <video autoplay muted loop id="bg-video">
+    <video autoplay muted loop playsinline id="bg-video" aria-hidden="true">
         <source src="{% static 'videos/code-vid-01.mp4' %}" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -37,29 +14,59 @@ Inject HTML for the content
         <!-- Tarjeta de presentación -->
         <div class="card text-light p-4 shadow-lg mt-3" id="visit-card">
             <div class="d-flex flex-column align-items-center">
-                <img src="{% static 'imgs/portrait-me.jpeg' %}" alt="Such a handsome boy" class="rounded-circle mb-3">
+                <!-- <span class="availability-badge mb-4"><span aria-hidden="true"></span> Available for new projects</span> -->
+                <img src="{% static 'imgs/portrait-me.jpeg' %}" alt="Portrait of Victor Garcia" class="rounded-circle mb-3">
                 <h2 class="card-title mb-3">Victor G.C.</h2>
-                <h3 class="card-subtitle mb-4">Web Developer</h3>
+                <h3 class="card-subtitle mb-4">Full-stack web developer</h3>
                 <blockquote class="card-text mb-4">"With coffee by my side, your problems won’t survive."</blockquote>
                 <div class="d-flex gap-3" id="social-links">
-                    <a href="https://www.linkedin.com/in/vgc89/">
-                        <i class="fa-brands fa-linkedin-in">
-                            <p class="d-none">Go to Linkedin</p>
-                        </i>
+                    <a href="https://www.linkedin.com/in/vgc89/" target="_blank" rel="noopener noreferrer" aria-label="Victor Garcia on LinkedIn">
+                        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
                     </a>
-                    <a href="https://github.com/Vgarcan">
-                        <i class="fa-brands fa-github">
-                            <p class="d-none">Go to Github</p>
-                        </i>
+                    <a href="https://github.com/Vgarcan" target="_blank" rel="noopener noreferrer" aria-label="Victor Garcia on GitHub">
+                        <i class="fa-brands fa-github" aria-hidden="true"></i>
                     </a>
                 </div>
-                <a href="path-to-your-resume.pdf" class="btn btn-primary btn-lg mt-4" download>Download Resume</a>
+                <button type="button" class="btn btn-primary btn-lg mt-4" data-bs-toggle="modal" data-bs-target="#resumePrivacyModal">
+                    Download Resume
+                </button>
             </div>
         </div>
-        <div class="container text-center mt-3">
-            <h2 class="display-4">Why Hire Me?</h2>
-            <p class="lead">I'm Victor GC (a.k.a Xema), a web developer passionate about building your next great idea.</p>
-            <a href="#portfolio" class="btn btn-light btn-lg mt-3">See My Work</a>
+        <div class="container text-center mt-5 hero-copy">
+            <span class="eyebrow eyebrow-light">Ideas engineered for the web</span>
+            <h2 class="display-4 mt-2">I turn ambitious ideas into useful digital products.</h2>
+            <p class="lead mt-3">From thoughtful interfaces to reliable Django backends, I build experiences that are clear, fast and ready to grow.</p>
+            <div class="hero-actions mt-4">
+                <a href="#portfolio" class="btn btn-light btn-lg">Explore my work <i class="fa-solid fa-arrow-down ms-2" aria-hidden="true"></i></a>
+                <a href="#contact" class="btn btn-ghost btn-lg">Let’s build something</a>
+            </div>
+        </div>
+    </div>
+    <a class="scroll-cue" href="#about" aria-label="Continue to About Me">
+        <span>scroll</span><i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+    </a>
+</div>
+
+<!-- Resume privacy joke -->
+<div class="modal fade" id="resumePrivacyModal" tabindex="-1" aria-labelledby="resumePrivacyTitle" aria-describedby="resumePrivacyDescription" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content privacy-modal">
+            <button type="button" class="btn-close privacy-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body">
+                <div class="privacy-mascot-wrap">
+                    <img src="{% static 'imgs/privacy-pup-mascot.webp' %}" alt="The dog mascot guarding a résumé and raising one paw">
+                </div>
+                <div class="privacy-copy">
+                    <span class="privacy-kicker"><i class="fa-solid fa-shield" aria-hidden="true"></i> Barkend Security</span>
+                    <h2 id="resumePrivacyTitle">Nice try. Paws off the personal data.</h2>
+                    <p class="privacy-joke" id="resumePrivacyDescription">Publishing a CV packed with personal details on the open web isn’t networking. It’s playing <em>fetch</em> — and the bots always fetch first.</p>
+                    <p>If you want to talk to Victor, use the contact form. Tell him about the role or project and he’ll share the relevant details with an actual human.</p>
+                    <div class="privacy-actions">
+                        <button type="button" class="btn btn-primary" id="resumeContactButton">Contact Victor</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Good dog</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -67,7 +74,10 @@ Inject HTML for the content
 <!-- About Me Section -->
 <section id="about" class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-4 fs-1 fw-bolder">About Me</h2>
+        <div class="section-heading text-center">
+            <span class="eyebrow">Behind the code</span>
+            <h2 class="mb-4 fs-1 fw-bolder">About Me</h2>
+        </div>
         <hr class="w-50 mx-auto">
         <div class="row justify-content-center">
             <div class="col-md-8 text-center">
@@ -173,49 +183,65 @@ Inject HTML for the content
 <!-- Portfolio Section -->
 <section id="portfolio" class="py-5">
     <div class="container">
-        <h2 class="text-center mb-4 bg-primary rounded-pill">Portfolio</h2>
+        <div class="section-heading section-heading-light text-center">
+            <span class="eyebrow eyebrow-light">Selected work</span>
+            <h2 class="text-center mb-4">Projects built with purpose</h2>
+            <p>Three different challenges, each shaped around a clear user need.</p>
+        </div>
         <div class="row">
             <!-- DreamsReader  -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 project-column project-blue">
+                <span class="project-index" aria-hidden="true">01</span>
                 <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
                     <img src="{% static 'imgs/projs/dreamsreader-pic.png' %}" class="card-img-top" alt="Project 1">
                     <div class="card-body d-flex flex-column">
+                        <span class="project-type">Content platform</span>
                         <h5 class="card-title">DreamsReader</h5>
                         <p class="card-text">Static App for a platform that allows users to explore and share their dreams </p>
-                        <br>
-                        <div class="container mt-auto">
-                            <a href="https://ambitious-bush-0d5afce1e.4.azurestaticapps.net/" class="btn btn-primary my-2" target="_blank">View Project</a>
-                            <a href="https://github.com/Vgarcan/CodeInstitute-proj01" class="btn btn-secondary my-2" target="_blank">Source Code</a>
+                        <div class="tech-stack" aria-label="Technologies used">
+                            <span>HTML</span><span>CSS</span><span>Azure</span>
+                        </div>
+                        <div class="project-actions mt-auto">
+                            <a href="https://ambitious-bush-0d5afce1e.4.azurestaticapps.net/" class="btn btn-primary my-2" target="_blank" rel="noopener noreferrer">View Project</a>
+                            <a href="https://github.com/Vgarcan/CodeInstitute-proj01" class="btn btn-outline-dark my-2" target="_blank" rel="noopener noreferrer" aria-label="DreamsReader source code on GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i> Source</a>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- LimonXemo -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 project-column project-yellow">
+                <span class="project-index" aria-hidden="true">02</span>
                 <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
                     <img src="{% static 'imgs/projs/limonxemo-pic.png' %}" class="card-img-top" alt="Project 2">
                     <div class="card-body d-flex flex-column">
+                        <span class="project-type">Interactive experience</span>
                         <h5 class="card-title">LimonXemo</h5>
                         <p class="card-text">My personal Music Player created with JavaScript.</p>
-                        <br>
-                        <div class="container mt-auto">
-                            <a href="https://vgarcan.github.io/CodeInstitute-proj02/" class="btn btn-primary my-2" target="_blank">View Project</a>
-                            <a href="https://github.com/Vgarcan/CodeInstitute-proj02" class="btn btn-secondary my-2" target="_blank">Source Code</a>
+                        <div class="tech-stack" aria-label="Technologies used">
+                            <span>JavaScript</span><span>CSS</span><span>GitHub Pages</span>
+                        </div>
+                        <div class="project-actions mt-auto">
+                            <a href="https://vgarcan.github.io/CodeInstitute-proj02/" class="btn btn-primary my-2" target="_blank" rel="noopener noreferrer">View Project</a>
+                            <a href="https://github.com/Vgarcan/CodeInstitute-proj02" class="btn btn-outline-dark my-2" target="_blank" rel="noopener noreferrer" aria-label="LimonXemo source code on GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i> Source</a>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- XemiJobs -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 project-column project-purple">
+                <span class="project-index" aria-hidden="true">03</span>
                 <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
                     <img src="{% static 'imgs/projs/xemijobs-pic.png' %}" class="card-img-top" alt="Project 3">
                     <div class="card-body d-flex flex-column">
+                        <span class="project-type">Full-stack application</span>
                         <h5 class="card-title">XemiJobs</h5>
-                        <p class="card-text">A job search platform designed to connect employers with potential candidates..</p>
-                        <br>
-                        <div class="container mt-auto">
-                            <a href="https://xemijobs-616b41a185c0.herokuapp.com/" class="btn btn-primary my-2" target="_blank">View Project</a>
-                            <a href="https://github.com/Vgarcan/CodeInstitute-proj03-v002" class="btn btn-secondary my-2" target="_blank">Source Code</a>
+                        <p class="card-text">A job search platform designed to connect employers with potential candidates.</p>
+                        <div class="tech-stack" aria-label="Technologies used">
+                            <span>Django</span><span>Python</span><span>PostgreSQL</span>
+                        </div>
+                        <div class="project-actions mt-auto">
+                            <a href="https://xemijobs-616b41a185c0.herokuapp.com/" class="btn btn-primary my-2" target="_blank" rel="noopener noreferrer">View Project</a>
+                            <a href="https://github.com/Vgarcan/CodeInstitute-proj03-v002" class="btn btn-outline-dark my-2" target="_blank" rel="noopener noreferrer" aria-label="XemiJobs source code on GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i> Source</a>
                         </div>
                     </div>
                 </div>
@@ -224,10 +250,104 @@ Inject HTML for the content
     </div>
 </section>
 
+<!-- After-hours Lab -->
+<section id="lab" class="py-5">
+    <div class="container">
+        <div class="lab-intro">
+            <div>
+                <span class="eyebrow">The Dev Bakery · After hours</span>
+                <h2>Technology is my job.<br>It’s also my favourite hobby.</h2>
+            </div>
+            <div class="lab-manifesto">
+                <p>When an idea refuses to leave me alone, I build it. These projects are where I pressure-test AI: directing it, challenging the result, finding its limits and learning where human judgement still matters most.</p>
+                <p class="lab-highlight">AI helps me take an idea further. Curiosity, testing and engineering are what make it work.</p>
+            </div>
+        </div>
+
+        <article class="lab-feature" aria-labelledby="aihub-title">
+            <a class="lab-feature-media" href="https://aihub.dev-bakery.com/" target="_blank" rel="noopener noreferrer" aria-label="Open AI Hub in a new tab">
+                <img src="{% static 'imgs/lab/aihub.webp' %}" alt="AI Hub homepage showing an inspectable intelligent workflow" width="1200" height="750">
+                <span>Live interface <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+            </a>
+            <div class="lab-feature-copy">
+                <div class="lab-meta">
+                    <span class="lab-status"><span aria-hidden="true"></span> Active development</span>
+                    <span class="lab-role">The main experiment</span>
+                </div>
+                <span class="lab-icon" aria-hidden="true"><i class="fa-solid fa-brain"></i></span>
+                <h3 id="aihub-title">AI Hub</h3>
+                <p class="lab-lead">A Django-native operations layer for building AI systems you can configure, run and actually inspect.</p>
+                <p>AI Hub brings providers, models, agents, tools and knowledge into one controlled workspace. It supports fixed orchestration pipelines and autonomous GAME sessions while keeping execution history, approvals and failures visible.</p>
+                <div class="lab-tags" aria-label="AI Hub capabilities">
+                    <span>AI agents</span><span>Orchestration</span><span>Auditing</span><span>Django</span><span>Human control</span>
+                </div>
+                <div class="lab-actions">
+                    <a class="btn btn-primary" href="https://aihub.dev-bakery.com/" target="_blank" rel="noopener noreferrer">Explore AI Hub</a>
+                    <a class="btn btn-outline-dark" href="https://aihub.dev-bakery.com/docs/" target="_blank" rel="noopener noreferrer">Read the docs</a>
+                </div>
+                <p class="lab-availability"><i class="fa-solid fa-flask" aria-hidden="true"></i> This is a live laboratory. Features are evolving and the connected AI may occasionally be unavailable.</p>
+            </div>
+        </article>
+
+        <div class="lab-grid">
+            <article class="lab-card lab-card-derby">
+                <a class="lab-card-preview" href="https://derby.dev-bakery.com/" target="_blank" rel="noopener noreferrer" aria-label="Open The Ridiculous Derby in a new tab">
+                    <img src="{% static 'imgs/lab/derby.webp' %}" alt="The Ridiculous Derby live racing homepage" width="1200" height="750" loading="lazy">
+                </a>
+                <div class="lab-card-body">
+                    <div class="lab-card-top">
+                        <span class="lab-card-icon" aria-hidden="true">🏁</span>
+                        <span class="lab-card-number">01</span>
+                    </div>
+                    <h3>The Ridiculous Derby</h3>
+                    <p>Anything can race, nobody risks real money and chaos is always live. An experiment in real-time play, zero-friction onboarding and multilingual communities.</p>
+                    <div class="lab-tags"><span>Real time</span><span>Game systems</span><span>i18n</span></div>
+                    <a href="https://derby.dev-bakery.com/" target="_blank" rel="noopener noreferrer">Join the chaos <span aria-hidden="true">↗</span></a>
+                </div>
+            </article>
+
+            <article class="lab-card lab-card-mtg">
+                <a class="lab-card-preview" href="https://mtg.dev-bakery.com/" target="_blank" rel="noopener noreferrer" aria-label="Open Jumpstart Archive in a new tab">
+                    <img src="{% static 'imgs/lab/jumpstart-archive.webp' %}" alt="Jumpstart Archive homepage showing Magic cards and deck tools" width="1200" height="750" loading="lazy">
+                </a>
+                <div class="lab-card-body">
+                    <div class="lab-card-top">
+                        <span class="lab-card-icon" aria-hidden="true"><i class="fa-solid fa-wand-sparkles"></i></span>
+                        <span class="lab-card-number">02</span>
+                    </div>
+                    <h3>Jumpstart Archive</h3>
+                    <p>A community home for creating and sharing 20-card Magic: The Gathering Jumpstart decks, complete with printable QR labels, galleries and a mobile life counter.</p>
+                    <div class="lab-tags"><span>Community</span><span>QR tools</span><span>Mobile UX</span></div>
+                    <a href="https://mtg.dev-bakery.com/" target="_blank" rel="noopener noreferrer">Browse the archive <span aria-hidden="true">↗</span></a>
+                </div>
+            </article>
+
+            <article class="lab-card lab-card-themes">
+                <a class="lab-card-preview" href="https://dev-bakery.com/" target="_blank" rel="noopener noreferrer" aria-label="Open Dev Bakery Themes in a new tab">
+                    <img src="{% static 'imgs/lab/dev-bakery-themes.webp' %}" alt="Dev Bakery homepage presenting its collection of 17 Bootstrap themes" width="1200" height="750" loading="lazy">
+                </a>
+                <div class="lab-card-body">
+                    <div class="lab-card-top">
+                        <span class="lab-card-icon" aria-hidden="true"><i class="fa-solid fa-palette"></i></span>
+                        <span class="lab-card-number">03</span>
+                    </div>
+                    <h3>Dev Bakery Themes</h3>
+                    <p>Seventeen visual personalities applied to the same complete Bootstrap component set. A playground for CSS variables, motion and design-system edge cases.</p>
+                    <div class="lab-tags"><span>17 themes</span><span>Bootstrap</span><span>CSS systems</span></div>
+                    <a href="https://dev-bakery.com/" target="_blank" rel="noopener noreferrer">Switch the theme <span aria-hidden="true">↗</span></a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
 <!-- skills -->
 <section id="skills" class="py-5 bg-secondary text-light">
     <div class="container-fluid text-center">
-        <h2 class="mb-4">Skills</h2>
+        <div class="section-heading section-heading-light">
+            <span class="eyebrow eyebrow-light">My toolkit</span>
+            <h2 class="mb-4">Skills that ship products</h2>
+        </div>
         <div class="slider-container py-4">
             <div class="slider" id="slider">
                 <!-- Repite las cartas para simular continuidad -->
@@ -281,6 +401,27 @@ Inject HTML for the content
                         <p class="card-text">Python, Flask, Django, REST API</p>
                     </div>
                 </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm" aria-hidden="true">
+                    <div class="card-body">
+                        <i class="fa fa-cloud fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">API & Web Scraping</h4>
+                        <p class="card-text">API Integration, Selenium, BeautifulSoup</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm" aria-hidden="true">
+                    <div class="card-body">
+                        <i class="fa fa-database fa-3x text-success mb-3"></i>
+                        <h4 class="card-title">Databases</h4>
+                        <p class="card-text">SQL Managers (MySQL, PostgresSQL, MongoDB, etc)</p>
+                    </div>
+                </div>
+                <div class="card h-100 text-center bg-dark text-light shadow-sm" aria-hidden="true">
+                    <div class="card-body">
+                        <i class="fa fa-cloud fa-3x text-info mb-3"></i>
+                        <h4 class="card-title">Cloud & DevOps</h4>
+                        <p class="card-text">Microsoft Azure Fundamentals (AZ-900), AWS CloudFormation</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -289,7 +430,8 @@ Inject HTML for the content
 
 <!-- TimeLine Section -->
 <section id="studies" class="text-center">
-    <h2 class="m-4">Studies</h2>
+    <span class="eyebrow eyebrow-light">Always learning</span>
+    <h2 class="m-4">Studies &amp; certifications</h2>
     <hr class="w-50 mx-auto">
     <div class="container-fluid py-3">
         <div class="container main-timeline-4 text-light px-4">
@@ -364,24 +506,42 @@ Inject HTML for the content
 </section>
 
 
-<!-- Testimonials Section -->
+<!-- Working With Me Section -->
 <section id="testimonials" class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-4">Testimonials</h2>
+        <div class="section-heading text-center">
+            <span class="eyebrow">What you can expect</span>
+            <h2 class="text-center mb-4">Good work starts with a good process</h2>
+            <p>I bring technical care, honest communication and a practical focus to every collaboration.</p>
+        </div>
         <div class="row">
-            <div class="col-md-6 mb-3">
-                <div class="card shadow border-0 mb-4 h-100">
-                    <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
-                        <p class="card-text">"If you don't hire him, your competitors definitely will. Don't miss this chance!"</p>
-                        <h4 class="blockquote-footer mt-3">Imaginary CEO</h4>
+            <div class="col-md-4 mb-3">
+                <div class="card process-card h-100">
+                    <div class="card-body">
+                        <span class="process-icon"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
+                        <span class="process-number">01</span>
+                        <h4>Clear communication</h4>
+                        <p class="card-text">Regular, jargon-free updates so you always know what is happening and why.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <div class="card shadow border-0 mb-4 h-100">
-                    <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
-                        <p class="card-text">"His code is cleaner than my kitchen after spring cleaning."</p>
-                        <h4 class="blockquote-footer mt-3">Enthusiastic Client</h4>
+            <div class="col-md-4 mb-3">
+                <div class="card process-card h-100">
+                    <div class="card-body">
+                        <span class="process-icon"><i class="fa-solid fa-compass-drafting" aria-hidden="true"></i></span>
+                        <span class="process-number">02</span>
+                        <h4>Purposeful decisions</h4>
+                        <p class="card-text">Every technical and visual choice connects back to users and business goals.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card process-card h-100">
+                    <div class="card-body">
+                        <span class="process-icon"><i class="fa-solid fa-rocket" aria-hidden="true"></i></span>
+                        <span class="process-number">03</span>
+                        <h4>Built to evolve</h4>
+                        <p class="card-text">Maintainable foundations that are easy to improve as your ideas grow.</p>
                     </div>
                 </div>
             </div>
@@ -391,10 +551,11 @@ Inject HTML for the content
 
 
 <!-- Contact Section -->
-<section id="contact" class="py-5">
+<section id="contact" class="py-5" tabindex="-1">
     <div class="container text-center">
-        <h2 class="mb-4">Contact</h2>
-        <p>Interested in working together? Let's talk!</p>
+        <span class="eyebrow eyebrow-light">Start a conversation</span>
+        <h2 class="mb-4">Have an idea? Let’s make it real.</h2>
+        <p>Tell me what you are building, where you are stuck, or simply what you would like to explore.</p>
         {% if success %}
         <div class="alert alert-success">{{ success }}</div>
         {% elif error %}
@@ -403,42 +564,29 @@ Inject HTML for the content
         <form method="POST" class="row g-3 justify-content-center">
             {% csrf_token %}
             <div class="col-md-4">
-                {{ form.email }}
+                <label class="visually-hidden" for="{{ form.email.id_for_label }}">Email address</label> {{ form.email }}
             </div>
             <div class="col-md-4">
-                {{ form.name }}
+                <label class="visually-hidden" for="{{ form.name.id_for_label }}">Name</label> {{ form.name }}
             </div>
             <div class="col-md-4">
-                {{ form.subject }}
+                <label class="visually-hidden" for="{{ form.subject.id_for_label }}">Subject</label> {{ form.subject }}
             </div>
             <div class="col-12">
-                {{ form.body }}
+                <label class="visually-hidden" for="{{ form.body.id_for_label }}">Message</label> {{ form.body }}
             </div>
             <div class="col-12">
-                <div class="cf-turnstile" data-sitekey="{{ sitekeyTurnstile }}"></div>
+                <div class="cf-turnstile" data-sitekey="{{ sitekeyTurnstile }}" data-size="flexible"></div>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Send Message</button>
             </div>
         </form>
-        
+
     </div>
 </section>
 
-{% endblock content %} 
-
-
-{% comment %} 
-To the bottom of the body tag 
-{% endcomment %} 
-{% block extra_body %} 
-{% endblock extra_body %} 
-
-
-{% comment %} 
-JS tag injection 
-{% endcomment %} 
-{% block js_inpage %}
+{% endblock content %} {% comment %} To the bottom of the body tag {% endcomment %} {% block extra_body %} {% endblock extra_body %} {% comment %} JS tag injection {% endcomment %} {% block js_inpage %}
 <script>
     const slider = document.getElementById('slider');
 
@@ -450,5 +598,26 @@ JS tag injection
         slider.style.animationPlayState = 'running'; // Reanuda la animación
     });
 
+    const resumeModalElement = document.getElementById('resumePrivacyModal');
+    const resumeContactButton = document.getElementById('resumeContactButton');
+    const contactSection = document.getElementById('contact');
+    let goToContactAfterClose = false;
+
+    resumeContactButton.addEventListener('click', () => {
+        goToContactAfterClose = true;
+        bootstrap.Modal.getOrCreateInstance(resumeModalElement).hide();
+    });
+
+    resumeModalElement.addEventListener('hidden.bs.modal', () => {
+        if (!goToContactAfterClose) return;
+
+        goToContactAfterClose = false;
+        history.pushState(null, '', '#contact');
+        contactSection.focus({ preventScroll: true });
+        contactSection.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+            block: 'start'
+        });
+    });
 </script>
 {% endblock js_inpage %}

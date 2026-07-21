@@ -18,7 +18,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css" integrity="sha384-NvKbDTEnL+A8F/AA5Tc5kmMLSJHUO868P+lDtTpJIeQdGYaUIuLr4lVGOEA1OcMy" crossorigin="anonymous">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
@@ -46,20 +48,19 @@
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div class="container">
-                    <a href="#"><img id="nav-logo" src="{% static 'favicon.ico' %}" alt="Main Logo"></a>
-                    <a class="navbar-brand" href="#">ineedtohirethisguy.com</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <span class="navbar-toggler-icon">
-                            <p class="d-none">Toggle Menu</p>
-                        </span>
+                    <a href="{% url 'main:home' %}" aria-label="Go to homepage"><img id="nav-logo" src="{% static 'favicon.ico' %}" alt=""></a>
+                    <a class="navbar-brand" href="{% url 'main:home' %}">ineedtohirethisguy.com</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item"><a class="nav-link" href="#about">About Me</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:home' %}#about">About Me</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:home' %}#portfolio">Portfolio</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:home' %}#lab">AI Lab</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:home' %}#skills">Skills</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:home' %}#testimonials">How I Work</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:home' %}#contact">Contact</a></li>
                             <li class="nav-item d-none"><a class="nav-link" href="{% url 'blog:blogs_list' %}">Blog</a></li>
                         </ul>
                     </div>
@@ -76,13 +77,23 @@
 
         <!-- Footer -->
         <footer class="bg-dark text-white text-center py-3">
-            <p>© 2024 Victor Garcia - ineedtohirethisguy.com</p>
-            <p><small>Designed and built by me. If you find a bug, it’s there for testing your attention to detail.</small></p>
+            <p>© {% now "Y" %} Victor Garcia · ineedtohirethisguy.com</p>
+            <p><small><span class="footer-prompt" aria-hidden="true">&gt;_</span> Designed, coded and fuelled by coffee. If you find a bug, it’s testing your attention to detail.</small></p>
         </footer>
 
         <!-- Bootstrap JS -->
         
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.querySelectorAll('#navbarNav .nav-link').forEach((link) => {
+                link.addEventListener('click', () => {
+                    const menu = document.getElementById('navbarNav');
+                    if (menu.classList.contains('show')) {
+                        bootstrap.Collapse.getOrCreateInstance(menu).hide();
+                    }
+                });
+            });
+        </script>
         {# Inject extra links #}
         {% block extra_body %}
         {% endblock extra_body %}

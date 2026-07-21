@@ -601,7 +601,7 @@ header.sticky-top {
 
 #portfolio {
     background-color: var(--background-color);
-    background-image: linear-gradient(rgba(245, 246, 248, 0.82), rgba(245, 246, 248, 0.9)), url("/static/imgs/portfolio-bg.jpg");
+    background-image: linear-gradient(rgba(245, 246, 248, 0.82), rgba(245, 246, 248, 0.9)), url("/static/imgs/portfolio-bg.02c33ccde80f.jpg");
     background-position: center;
     background-size: cover;
 }
@@ -747,49 +747,14 @@ header.sticky-top {
 
 .lab-feature {
     display: grid;
-    grid-template-columns: minmax(20rem, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.18fr) minmax(20rem, 0.82fr);
     overflow: hidden;
     margin-bottom: 1.5rem;
-    border: 1px solid var(--border-color);
-    border-top: 4px solid var(--primary-color);
-    border-radius: var(--radius);
-    background: #fff;
-    box-shadow: var(--shadow);
-    color: var(--text-color);
-}
-
-.lab-feature-media {
-    position: relative;
-    display: block;
-    min-height: 35rem;
-    overflow: hidden;
-    border-right: 1px solid var(--border-color);
-    background: #070c13;
-}
-
-.lab-feature-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 300ms ease;
-}
-
-.lab-feature-media:hover img {
-    transform: scale(1.02);
-}
-
-.lab-feature-media > span {
-    position: absolute;
-    right: 1rem;
-    bottom: 1rem;
-    padding: 0.4rem 0.65rem;
-    border-radius: 6px;
-    background: rgba(8, 8, 8, 0.82);
-    color: #fff;
-    font-size: 0.68rem;
-    font-weight: 600;
-    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    background: var(--dark-soft);
+    box-shadow: 0 16px 40px rgba(20, 28, 40, 0.16);
+    color: rgba(255, 255, 255, 0.72);
 }
 
 .lab-feature-copy {
@@ -812,10 +777,10 @@ header.sticky-top {
     align-items: center;
     gap: 0.45rem;
     padding: 0.32rem 0.65rem;
-    border: 1px solid #b9e6c7;
+    border: 1px solid rgba(74, 222, 128, 0.25);
     border-radius: 999px;
-    background: #edf9f1;
-    color: #207a42;
+    background: rgba(74, 222, 128, 0.08);
+    color: #baf3ca;
     font-size: 0.7rem;
     font-weight: 600;
 }
@@ -828,7 +793,7 @@ header.sticky-top {
 }
 
 .lab-role {
-    color: var(--muted-color);
+    color: rgba(255, 255, 255, 0.48);
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -849,14 +814,14 @@ header.sticky-top {
 
 .lab-feature h3 {
     margin-bottom: 0.8rem;
-    color: var(--heading-color);
+    color: #fff;
     font-size: clamp(2.5rem, 5vw, 4.25rem);
 }
 
 .lab-feature .lab-lead {
     max-width: 36rem;
     margin-bottom: 0.9rem;
-    color: var(--heading-color);
+    color: #fff;
     font-size: clamp(1.05rem, 2vw, 1.25rem);
     font-weight: 500;
 }
@@ -874,10 +839,10 @@ header.sticky-top {
 
 .lab-tags span {
     padding: 0.26rem 0.55rem;
-    border: 1px solid #dfe4ea;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 999px;
-    background: #f7f9fb;
-    color: var(--muted-color);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.66rem;
     font-weight: 500;
 }
@@ -890,7 +855,7 @@ header.sticky-top {
 
 .lab-availability {
     margin-top: 1.35rem;
-    color: var(--muted-color);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 0.72rem;
 }
 
@@ -898,6 +863,98 @@ header.sticky-top {
     margin-right: 0.35rem;
     color: var(--secondary-color);
 }
+
+.lab-feature-visual {
+    position: relative;
+    min-height: 32rem;
+    overflow: hidden;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: #10182a;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
+.ai-core {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 7rem;
+    height: 7rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    background: var(--primary-color);
+    box-shadow: 0 0 0 0.75rem rgba(26, 115, 232, 0.1), 0 12px 34px rgba(0, 0, 0, 0.35);
+    color: #fff;
+    place-content: center;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.ai-core i {
+    font-size: 1.7rem;
+}
+
+.ai-core small {
+    margin-top: 0.2rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.ai-orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ai-orbit-one {
+    width: 15rem;
+    height: 15rem;
+}
+
+.ai-orbit-two {
+    width: 23rem;
+    height: 23rem;
+}
+
+.ai-orbit span {
+    position: absolute;
+    top: 50%;
+    right: -1.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    background: #27334b;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.62rem;
+    transform: translateY(-50%);
+}
+
+.ai-orbit-two span {
+    top: 18%;
+    right: auto;
+    left: 0;
+}
+
+.ai-node {
+    position: absolute;
+    z-index: 2;
+    padding: 0.38rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    background: #202b40;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.65rem;
+    font-weight: 500;
+}
+
+.node-one { top: 14%; right: 10%; }
+.node-two { right: 12%; bottom: 17%; }
+.node-three { bottom: 12%; left: 10%; }
 
 .lab-grid {
     display: grid;
@@ -907,9 +964,8 @@ header.sticky-top {
 
 .lab-card {
     display: flex;
-    min-height: 32rem;
-    padding: 0;
-    overflow: hidden;
+    min-height: 23rem;
+    padding: 1.6rem;
     border: 1px solid var(--border-color);
     border-top: 4px solid var(--primary-color);
     border-radius: var(--radius);
@@ -917,35 +973,6 @@ header.sticky-top {
     box-shadow: 0 7px 22px rgba(20, 28, 40, 0.07);
     flex-direction: column;
     transition: transform 180ms ease, box-shadow 180ms ease;
-}
-
-.lab-card-preview {
-    display: block;
-    overflow: hidden;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--dark-soft);
-}
-
-.lab-card-preview img {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    object-position: top center;
-    transition: transform 300ms ease, filter 300ms ease;
-}
-
-.lab-card:hover .lab-card-preview img {
-    filter: saturate(1.05);
-    transform: scale(1.025);
-}
-
-.lab-card-body {
-    display: flex;
-    padding: 1.4rem;
-    flex: 1;
-    flex-direction: column;
 }
 
 .lab-card:hover {
@@ -961,7 +988,7 @@ header.sticky-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1.6rem;
 }
 
 .lab-card-icon {
@@ -997,7 +1024,7 @@ header.sticky-top {
     color: var(--muted-color);
 }
 
-.lab-card-body > a {
+.lab-card > a {
     width: fit-content;
     margin-top: auto;
     color: var(--primary-color);
@@ -1006,12 +1033,12 @@ header.sticky-top {
     text-decoration: none;
 }
 
-.lab-card-body > a span {
+.lab-card > a span {
     display: inline-block;
     transition: transform 180ms ease;
 }
 
-.lab-card-body > a:hover span {
+.lab-card > a:hover span {
     transform: translate(2px, -2px);
 }
 
@@ -1294,11 +1321,11 @@ main > .container.py-5 {
     }
 
     .lab-feature {
-        grid-template-columns: minmax(17rem, 0.9fr) minmax(0, 1.1fr);
+        grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
     }
 
-    .lab-feature-media {
-        min-height: 32rem;
+    .lab-feature-visual {
+        min-height: 29rem;
     }
 }
 
@@ -1382,11 +1409,10 @@ main > .container.py-5 {
         padding: 1.6rem;
     }
 
-    .lab-feature-media {
-        min-height: 0;
-        border-right: 0;
-        border-bottom: 1px solid var(--border-color);
-        aspect-ratio: 16 / 10;
+    .lab-feature-visual {
+        min-height: 20rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 0;
     }
 
     .lab-actions {
@@ -1398,6 +1424,11 @@ main > .container.py-5 {
         width: 100%;
     }
 
+    .ai-orbit-two {
+        width: 19rem;
+        height: 19rem;
+    }
+
     .lab-grid {
         grid-template-columns: 1fr;
     }
@@ -1406,7 +1437,7 @@ main > .container.py-5 {
         min-height: 0;
     }
 
-    .lab-card-body > a {
+    .lab-card > a {
         margin-top: 1rem;
     }
 
@@ -1503,13 +1534,7 @@ main > .container.py-5 {
 
 @media (hover: none) {
     .card:hover,
-    .btn:hover,
-    .lab-card:hover {
-        transform: none;
-    }
-
-    .lab-card:hover .lab-card-preview img,
-    .lab-feature-media:hover img {
+    .btn:hover {
         transform: none;
     }
 }

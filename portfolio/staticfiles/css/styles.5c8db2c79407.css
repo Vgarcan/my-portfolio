@@ -601,7 +601,7 @@ header.sticky-top {
 
 #portfolio {
     background-color: var(--background-color);
-    background-image: linear-gradient(rgba(245, 246, 248, 0.82), rgba(245, 246, 248, 0.9)), url("/static/imgs/portfolio-bg.jpg");
+    background-image: linear-gradient(rgba(245, 246, 248, 0.82), rgba(245, 246, 248, 0.9)), url("/static/imgs/portfolio-bg.02c33ccde80f.jpg");
     background-position: center;
     background-size: cover;
 }

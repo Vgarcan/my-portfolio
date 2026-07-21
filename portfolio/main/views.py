@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.shortcuts import render
+import logging
 import os
 from .forms import ContactForm
 from django.conf import settings
@@ -7,6 +8,9 @@ from django.conf import settings
 from django.conf import settings
 # Asegúrate de que esta función esté en un archivo utils.py o similar
 from _core.utils import turnstile_validation
+
+
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -17,21 +21,13 @@ def home(request):
     turnstile_sitekey = settings.TURNSTILE_SITEKEY
     turnstile_secret = settings.TURNSTILE_SECRET
     turnstile_verify_url = settings.TURNSTILE_VERIFY_URL
-    turnstile_js_api_url = settings.TURNSTILE_JS_API_URL
-
-    # Imprimir los detalles de Turnstile para depuración
-    print(f"""
-          Turnstile Sitekey: {turnstile_sitekey}
-          Turnstile Secret: {turnstile_secret}
-          Turnstile Verify URL: {turnstile_verify_url}
-          """)
 
     if request.method == "POST":
         # Crear el formulario con los datos enviados por POST
         form = ContactForm(request.POST)
 
         if not turnstile_secret:
-            print("Turnstile secret key is missing.")
+            logger.error("Turnstile secret key is missing.")
             return render(request, 'main/home.html', {
                 'form': form,
                 'sitekeyTurnstile': turnstile_sitekey,
@@ -40,18 +36,10 @@ def home(request):
 
         # Validar el formulario
         if form.is_valid():
-            print(">>> FORM IS VALID")
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             subject = form.cleaned_data['subject']
             body = form.cleaned_data['body']
-
-            print(f"""
-                Name: {name}
-                Email: {email}
-                Subject: {subject}
-                Body: {body}
-            """)
 
             # Validar Turnstile usando la función simplificada
             if turnstile_validation(request, turnstile_secret, turnstile_verify_url):
@@ -72,7 +60,6 @@ def home(request):
 
         else:
             # Errores en el formulario
-            print("Form Errors:", form.errors)
             return render(request, 'main/home.html', {
                 'form': form,
                 'sitekeyTurnstile': turnstile_sitekey,
@@ -116,9 +103,9 @@ def send_email(request, name, email, subject, body):
             'form': ContactForm(),  # Renderiza un formulario vacío tras el éxito
             'success': "Message sent successfully!"
         })
-    except Exception as e:
-        print(f"Error al enviar el correo: {e}")
+    except Exception:
+        logger.exception("Contact email could not be sent.")
         return render(request, 'main/home.html', {
             'form': ContactForm(),
-            'error': f"An error occurred while sending the email: {str(e)}"
+            'error': "An error occurred while sending the email. Please try again later."
         })

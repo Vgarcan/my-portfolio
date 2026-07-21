@@ -601,7 +601,7 @@ header.sticky-top {
 
 #portfolio {
     background-color: var(--background-color);
-    background-image: linear-gradient(rgba(245, 246, 248, 0.82), rgba(245, 246, 248, 0.9)), url("/static/imgs/portfolio-bg.jpg");
+    background-image: linear-gradient(rgba(245, 246, 248, 0.82), rgba(245, 246, 248, 0.9)), url("/static/imgs/portfolio-bg.02c33ccde80f.jpg");
     background-position: center;
     background-size: cover;
 }
@@ -929,7 +929,6 @@ header.sticky-top {
 .lab-card-preview img {
     display: block;
     width: 100%;
-    height: auto;
     aspect-ratio: 16 / 10;
     object-fit: cover;
     object-position: top center;
@@ -1503,13 +1502,7 @@ main > .container.py-5 {
 
 @media (hover: none) {
     .card:hover,
-    .btn:hover,
-    .lab-card:hover {
-        transform: none;
-    }
-
-    .lab-card:hover .lab-card-preview img,
-    .lab-feature-media:hover img {
+    .btn:hover {
         transform: none;
     }
 }

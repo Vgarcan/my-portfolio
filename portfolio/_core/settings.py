@@ -29,7 +29,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-print(DEBUG)
 
 ALLOWED_HOSTS = [
     '192.168.2.116',
@@ -139,7 +138,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # STATIC SETTINGS FOR WHITENOISE
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -151,13 +150,22 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# List of finder classes that know how to find static files in
-# various locations.
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
+
+# WhiteNoise fingerprints and compresses every asset in all environments.
+# The fingerprint changes whenever the file changes, so browsers never keep
+# serving an obsolete CSS file after a deployment.
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -172,24 +180,11 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", True)
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-print(f"""
-      EMAIL_HOST: {EMAIL_HOST}
-      EMAIL_PORT: {EMAIL_PORT}
-      EMAIL_USE_TLS: {EMAIL_USE_TLS}
-      EMAIL_HOST_USER: {EMAIL_HOST_USER}
-      EMAIL_HOST_PASSWORD: {EMAIL_HOST_PASSWORD}
-      """)
-
 
 # > For development purposes no further configuration is required. By default, django-Turnstile will use dummy keys.
 # > For production, you’ll need to obtain your Turnstile site key and secret key and add them to you settings:
 TURNSTILE_SITEKEY = os.getenv("TURNSTILE_SITEKEY")
 TURNSTILE_SECRET = os.getenv("TURNSTILE_SECRET")
-
-print(f"""
-      TURNSTILE_SITEKEY: {TURNSTILE_SITEKEY}
-      TURNSTILE_SECRET: {TURNSTILE_SECRET}
-      """)
 
 # If you need to, you can also override default turnstile endpoints:
 TURNSTILE_JS_API_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
@@ -197,11 +192,3 @@ TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverif
 
 # Change default verification timeout:
 TURNSTILE_TIMEOUT = 5
-
-if DEBUG:
-    STORAGES = {
-
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
