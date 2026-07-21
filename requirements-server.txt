@@ -37,6 +37,7 @@ python-dotenv
 pytz
 requests
 requests-oauthlib
+redis>=5,<7
 six
 soupsieve
 sqlparse

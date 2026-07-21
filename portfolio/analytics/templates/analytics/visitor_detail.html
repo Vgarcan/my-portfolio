@@ -1,0 +1,21 @@
+{% extends "analytics/base.html" %}
+{% block title %}Visitante {{ visitor.short_id }} · Trace{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'analytics:dashboard' %}">← Volver al dashboard</a>
+<header class="topbar"><div><div class="eyebrow">Expediente de visitante</div><h1 class="mono">{{ visitor.short_id }}</h1><p class="subtitle">Actividad seudónima correlacionada mediante cookie first-party.</p></div><div class="top-actions">{% if visitor.is_known_bot %}<span class="badge bot">Bot / crawler</span>{% endif %}<span class="badge {% if visitor.max_risk_score >= 80 %}critical{% elif visitor.max_risk_score >= 60 %}high{% elif visitor.max_risk_score >= 35 %}medium{% else %}low{% endif %}">Riesgo máximo {{ visitor.max_risk_score }}/100</span></div></header>
+
+<dl class="detail-grid">
+    <div class="card kv"><dt>Primera visita</dt><dd>{{ visitor.first_seen|date:'d M Y, H:i:s' }}</dd></div>
+    <div class="card kv"><dt>Última visita</dt><dd>{{ visitor.last_seen|date:'d M Y, H:i:s' }}</dd></div>
+    <div class="card kv"><dt>Actividad</dt><dd>{{ visitor.pageview_count }} vistas · {{ visitor.session_count }} sesiones</dd></div>
+    <div class="card kv"><dt>Recurrencia</dt><dd>{% if visitor.is_returning %}<span class="badge ok">Visitante recurrente</span>{% else %}<span class="badge">Primera visita</span>{% endif %}</dd></div>
+    <div class="card kv"><dt>Primera IP</dt><dd class="mono">{{ visitor.first_ip|default:'Desconocida' }}</dd></div>
+    <div class="card kv"><dt>Última IP</dt><dd class="mono">{{ visitor.last_ip|default:'Desconocida' }}</dd></div>
+    <div class="card kv"><dt>Última ubicación</dt><dd>{{ visitor.last_city|default:'—' }}{% if visitor.last_country %}, {{ visitor.last_country }}{% endif %}</dd></div>
+    <div class="card kv"><dt>Patrón</dt><dd>{{ stats.unique_pages }} rutas · {{ stats.unique_ips }} IPs</dd></div>
+</dl>
+
+{% if events %}<section class="panel" style="margin-bottom:16px"><div class="panel-head"><div><h2 class="panel-title">Eventos de seguridad asociados</h2><div class="panel-subtitle">Señales automáticas que requieren interpretación humana</div></div></div><div class="list">{% for event in events %}<div class="alert"><i class="alert-dot {{ event.severity }}"></i><div><div class="alert-title">{{ event.summary }} <span class="badge {{ event.severity }}">{{ event.get_severity_display }}</span>{% if event.resolved %} <span class="badge ok">resuelta</span>{% endif %}</div><div class="alert-meta">{{ event.occurred_at|date:'d M Y H:i:s' }} · {{ event.path }} · {{ event.evidence.signals }}</div></div><form method="post" action="{% url 'analytics:resolve_event' event.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="small-action" title="Cambiar estado">{% if event.resolved %}↺{% else %}✓{% endif %}</button></form></div>{% endfor %}</div></section>{% endif %}
+
+<section class="panel"><div class="panel-head"><div><h2 class="panel-title">Historial de actividad</h2><div class="panel-subtitle">Hasta 200 peticiones más recientes</div></div><span class="badge">Media {{ stats.average_response|floatformat:0 }} ms</span></div><div class="table-wrap"><table class="table"><thead><tr><th>Fecha</th><th>IP / ubicación</th><th>Petición</th><th>Estado</th><th>Respuesta</th><th>Cliente</th><th>Riesgo</th><th>User agent / señales</th></tr></thead><tbody>{% for hit in pageviews %}<tr><td>{{ hit.occurred_at|date:'d M Y H:i:s' }}</td><td><span class="mono">{{ hit.ip_address|default:'—' }}</span><br><span class="muted">{{ hit.city }} {{ hit.country }}</span></td><td class="mono">{{ hit.method }} <span class="path" title="{{ hit.path }}">{{ hit.path }}</span></td><td><span class="badge {% if hit.status_code >= 400 %}error{% else %}ok{% endif %}">{{ hit.status_code }}</span></td><td>{{ hit.response_ms }} ms</td><td>{{ hit.browser }} / {{ hit.device_type }}</td><td><span class="badge {{ hit.severity }}">{{ hit.risk_score }}/100</span></td><td class="ua"><span class="muted">{{ hit.user_agent|default:'Sin user-agent' }}</span>{% if hit.bot_reason %}<br><span class="badge medium">{{ hit.bot_reason }}</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="8" class="empty">Sin actividad.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

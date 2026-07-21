@@ -1,0 +1,345 @@
+{% extends "analytics/base.html" %}
+{% block content %}
+<header class="topbar">
+    <div><div class="eyebrow">Observabilidad privada</div><h1>{{ section_title }}</h1><p class="subtitle">{{ section_subtitle }}</p></div>
+    <div class="top-actions"><span class="live" id="live-status" role="status"><i class="pulse"></i><span>Actualizado {{ last_updated|timesince }} atrás</span></span><a class="button" href="{% url 'analytics:export_csv' %}?days={{ days }}&traffic={{ traffic }}&status={{ status }}&q={{ query|urlencode }}">↓ Exportar CSV</a><button class="button primary" id="refresh-dashboard" type="button">↻ Actualizar</button></div>
+</header>
+
+<form class="filters" method="get">
+    <div class="filter-search"><input aria-label="Buscar tráfico" name="q" value="{{ query }}" placeholder="Buscar IP, ruta, ciudad, país, ID o user-agent…"></div>
+    <div class="filter-item"><select name="days" aria-label="Periodo"><option value="1" {% if days == 1 %}selected{% endif %}>Últimas 24 h</option><option value="7" {% if days == 7 %}selected{% endif %}>Últimos 7 días</option><option value="30" {% if days == 30 %}selected{% endif %}>Últimos 30 días</option><option value="90" {% if days == 90 %}selected{% endif %}>Últimos 90 días</option></select></div>
+    <div class="filter-item"><select name="traffic" aria-label="Tipo de tráfico"><option value="all" {% if traffic == 'all' %}selected{% endif %}>Todo el tráfico</option><option value="human" {% if traffic == 'human' %}selected{% endif %}>Humanos</option><option value="bot" {% if traffic == 'bot' %}selected{% endif %}>Bots</option><option value="threat" {% if traffic == 'threat' %}selected{% endif %}>Amenazas</option></select></div>
+    <div class="filter-item"><select name="status" aria-label="Estado HTTP"><option value="all" {% if status == 'all' %}selected{% endif %}>Todos los estados</option><option value="success" {% if status == 'success' %}selected{% endif %}>Sin error</option><option value="error" {% if status == 'error' %}selected{% endif %}>Errores 4xx/5xx</option></select></div>
+    <button class="button primary" type="submit">Aplicar</button>
+</form>
+<p class="tracking-note">ⓘ <strong>Tu propia navegación no altera las métricas:</strong> las peticiones realizadas con una sesión staff activa se excluyen del tracker. Usa una ventana privada para una comprobación manual.</p>
+
+<div id="dashboard-live">
+<section class="cards" aria-label="Métricas principales" data-live-key="metrics">
+    <article class="card metric" style="--accent:var(--blue)"><div class="metric-label"><span>Páginas vistas</span><span class="info-tip" tabindex="0">i<span class="tooltip-card">Cada petición de página pública registrada. Los estáticos, el admin y las sesiones staff quedan fuera.</span></span></div><div class="metric-value">{{ total }}</div><div class="metric-note {% if total_delta >= 0 %}up{% else %}down{% endif %}">{{ total_delta|stringformat:'+d' }}% vs. periodo anterior</div></article>
+    <article class="card metric" style="--accent:var(--cyan)"><div class="metric-label"><span>Visitantes únicos</span><span class="info-tip" tabindex="0">i<span class="tooltip-card">Navegadores seudónimos distintos, correlacionados mediante un identificador first-party almacenado como hash.</span></span></div><div class="metric-value">{{ unique }}</div><div class="metric-note {% if unique_delta >= 0 %}up{% else %}down{% endif %}">{{ unique_delta|stringformat:'+d' }}% vs. periodo anterior</div></article>
+    <article class="card metric" style="--accent:var(--green)"><div class="metric-label"><span>Recurrentes</span><span class="info-tip" tabindex="0">i<span class="tooltip-card">Visitantes con más de una página vista o sesión. Una sesión nueva comienza tras 30 minutos de inactividad.</span></span></div><div class="metric-value">{{ returning }}</div><div class="metric-note">{{ returning_percent }}% de visitantes</div></article>
+    <article class="card metric" style="--accent:var(--amber)"><div class="metric-label"><span>Bots detectados</span><span class="info-tip" tabindex="0">i<span class="tooltip-card">Crawlers conocidos y clientes automatizados identificados por user-agent y señales de comportamiento.</span></span></div><div class="metric-value">{{ bots }}</div><div class="metric-note">{{ bot_percent }}% del tráfico filtrado</div></article>
+    <article class="card metric" style="--accent:var(--red)"><div class="metric-label"><span>Amenazas</span><span class="info-tip" tabindex="0">i<span class="tooltip-card">Peticiones con riesgo ≥60: escáneres, rutas sensibles, automatización agresiva o ráfagas anómalas.</span></span></div><div class="metric-value">{{ threats }}</div><div class="metric-note {% if threat_delta > 0 %}down{% else %}up{% endif %}">{{ threat_delta|stringformat:'+d' }}% vs. periodo anterior</div></article>
+    <article class="card metric" style="--accent:var(--purple)"><div class="metric-label"><span>Respuesta media</span><span class="info-tip" tabindex="0">i<span class="tooltip-card">Tiempo empleado por Django en construir la respuesta. No incluye red, Cloudflare ni renderizado del navegador.</span></span></div><div class="metric-value">{{ avg_response }}<small style="font-size:12px"> ms</small></div><div class="metric-note">Errores: {{ error_percent }}%</div></article>
+</section>
+
+<section class="signal-strip" aria-label="Indicadores operativos" data-live-key="signals">
+    <div class="signal" title="Visitantes distintos durante los últimos cinco minutos"><div class="signal-value">{{ active_visitors }}</div><div class="signal-label">Activos · 5 min</div></div>
+    <div class="signal" title="Visitantes cuya primera aparición está dentro del periodo"><div class="signal-value">{{ new_visitors }}</div><div class="signal-label">Visitantes nuevos</div></div>
+    <div class="signal" title="Países con geolocalización disponible"><div class="signal-value">{{ country_count }}</div><div class="signal-label">Países detectados</div></div>
+    <div class="signal" title="Rutas distintas solicitadas"><div class="signal-value">{{ unique_pages }}</div><div class="signal-label">Rutas únicas</div></div>
+    <div class="signal" title="Respuestas del servidor superiores a un segundo"><div class="signal-value">{{ slow_requests }}</div><div class="signal-label">Peticiones lentas</div></div>
+    <div class="signal" title="Respuestas HTTP 5xx"><div class="signal-value">{{ server_errors }}</div><div class="signal-label">Errores de servidor</div></div>
+</section>
+
+<section class="geo-grid" data-live-key="geography">
+    <article class="panel map-panel">
+        <div class="panel-head"><div><h2 class="panel-title">Mapa mundial de actividad</h2><div class="panel-subtitle">Mapa vectorial interactivo · arrastra, amplía o investiga cada país</div></div><span class="badge">{{ country_count }} países</span></div>
+        <div class="world-map-shell">
+            <div class="world-map" id="traffic-world-map" role="img" aria-label="Mapa mundial interactivo de actividad">
+                <div class="map-loading">Preparando mapa mundial…</div>
+            </div>
+            <div class="map-legend"><span><i></i>Actividad</span><span><i></i>Mayoría bot</span></div>
+        </div>
+        {{ map_locations|json_script:"traffic-map-data" }}
+    </article>
+    <aside class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Cobertura geográfica</h2><div class="panel-subtitle">Calidad y distribución de geodatos</div></div></div>
+        <div class="coverage-wrap"><div class="coverage-ring" style="--coverage:{{ geolocation_coverage }}%"><div><strong>{{ geolocation_coverage }}%</strong><small>localizado</small></div></div></div>
+        <div class="country-list">{% for row in countries|slice:":8" %}<div class="country-row"><span class="country-flag" data-country-flag="{{ row.country }}"></span><div><span class="country-name" data-country-label="{{ row.country }}">{{ row.country }}</span><span class="country-detail">{{ row.visitors }} únicos · {{ row.bot_percent }}% bots</span></div><div class="country-count"><strong>{{ row.views }}</strong><small>{{ row.share }}%</small></div></div>{% empty %}<div class="empty">Sin países identificados.</div>{% endfor %}</div>
+    </aside>
+</section>
+
+<section class="grid" data-live-key="traffic-alerts">
+    <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Volumen de tráfico</h2><div class="panel-subtitle">Peticiones registradas por día</div></div><span class="badge">{{ days }} días</span></div>
+        <div class="trend" role="img" aria-label="Gráfico diario de páginas vistas">{% for point in trend %}<div class="trend-col" style="--h:{{ point.height }}%"><div class="trend-tip"><strong>{{ point.label }}</strong><br>{{ point.views }} vistas · {{ point.visitors }} visitantes{% if point.threats %}<br>{{ point.threats }} amenazas{% endif %}</div><div class="trend-bar" style="height:{{ point.height }}%"></div></div>{% endfor %}</div>
+        <div class="legend"><span>Páginas vistas</span><span style="margin-left:auto">Pico: {{ trend_peak }} vistas</span></div>
+    </article>
+    <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Alertas abiertas</h2><div class="panel-subtitle">Eventos que requieren revisión</div></div><span class="badge {% if open_event_count %}high{% else %}ok{% endif %}">{{ open_event_count }} abiertas</span></div>
+        {% if recent_events %}<div class="list">{% for event in recent_events %}<div class="alert"><i class="alert-dot {{ event.severity }}"></i><div><div class="alert-title">{{ event.summary }}</div><div class="alert-meta"><span class="mono">{{ event.ip_address|default:'IP desconocida' }}</span> · {{ event.occurred_at|timesince }} · riesgo {{ event.evidence.risk_score }}/100</div></div><form method="post" action="{% url 'analytics:resolve_event' event.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="small-action" title="Marcar como resuelta" aria-label="Marcar alerta como resuelta">✓</button></form></div>{% endfor %}</div>{% else %}<div class="empty"><div class="empty-icon">✓</div>No hay alertas abiertas en este periodo.</div>{% endif %}
+    </article>
+</section>
+
+<section class="split" data-live-key="breakdowns">
+    <article class="panel"><div class="panel-head"><div><h2 class="panel-title">Páginas principales</h2><div class="panel-subtitle">Rutas con mayor actividad</div></div></div><div class="rank-list">{% for row in top_pages %}<div class="rank-row"><span class="rank-label mono" title="{{ row.path }}">{{ row.path }}</span><span class="muted">{{ row.visitors }} únicos</span><strong class="rank-value">{{ row.views }}</strong></div>{% empty %}<div class="empty">Sin datos.</div>{% endfor %}</div></article>
+    <article class="panel"><div class="panel-head"><div><h2 class="panel-title">Navegadores</h2><div class="panel-subtitle">Clientes con mayor presencia</div></div></div><div class="rank-list">{% for row in browser_data %}<div class="rank-row"><span class="rank-label">{{ row.browser|default:'Unknown' }}</span><div class="bar-track"><div class="bar-fill" style="width:{% widthratio row.total total 100 %}%"></div></div><strong class="rank-value">{{ row.total }}</strong></div>{% empty %}<div class="empty">Sin datos.</div>{% endfor %}</div></article>
+    <article class="panel"><div class="panel-head"><div><h2 class="panel-title">Origen del tráfico</h2><div class="panel-subtitle">Dominio referente o acceso directo</div></div></div><div class="rank-list">{% for host, count in referrers %}<div class="rank-row"><span class="rank-label" title="{{ host }}">{{ host }}</span><span></span><strong class="rank-value">{{ count }}</strong></div>{% empty %}<div class="empty">Sin datos.</div>{% endfor %}</div></article>
+</section>
+
+<section class="grid" data-live-key="risk-devices">
+    <article class="panel"><div class="panel-head"><div><h2 class="panel-title">IPs con más actividad</h2><div class="panel-subtitle">Volumen y riesgo máximo observado</div></div></div><div class="table-wrap"><table class="table"><thead><tr><th>IP</th><th>Peticiones</th><th>Bots</th><th>Riesgo máx.</th></tr></thead><tbody>{% for row in top_ips %}<tr><td class="mono">{{ row.ip_address }}</td><td>{{ row.views }}</td><td>{{ row.bots }}</td><td><span class="badge {% if row.max_risk >= 80 %}critical{% elif row.max_risk >= 60 %}high{% elif row.max_risk >= 35 %}medium{% else %}low{% endif %}">{{ row.max_risk }}/100</span></td></tr>{% empty %}<tr><td colspan="4" class="empty">Sin datos.</td></tr>{% endfor %}</tbody></table></div></article>
+    <article class="panel"><div class="panel-head"><div><h2 class="panel-title">Dispositivos</h2><div class="panel-subtitle">Clasificación basada en user-agent</div></div></div><div class="rank-list">{% for row in device_data %}<div class="rank-row"><span class="rank-label">{{ row.device_type|default:'Unknown' }}</span><div class="bar-track"><div class="bar-fill" style="width:{% widthratio row.total total 100 %}%"></div></div><strong class="rank-value">{{ row.total }}</strong></div>{% empty %}<div class="empty">Sin datos.</div>{% endfor %}</div></article>
+</section>
+
+<section class="panel" data-live-key="request-log">
+    <div class="panel-head"><div><h2 class="panel-title">Registro de peticiones</h2><div class="panel-subtitle">Las 50 peticiones más recientes que coinciden con los filtros</div></div><span class="badge">{{ total }} resultados</span></div>
+    <div class="table-wrap"><table class="table"><thead><tr><th>Hora</th><th>Visitante</th><th>IP / ubicación</th><th>Petición</th><th>Estado</th><th>Cliente</th><th>Riesgo</th><th>RPM</th></tr></thead><tbody>{% for hit in recent_views %}<tr><td title="{{ hit.occurred_at|date:'c' }}">{{ hit.occurred_at|date:'d M H:i:s' }}</td><td><a class="visitor-link mono" href="{% url 'analytics:visitor_detail' hit.visitor_id %}">{{ hit.visitor.short_id }}</a>{% if hit.visitor.is_returning %} <span class="badge ok">recurrente</span>{% endif %}</td><td><span class="mono">{{ hit.ip_address|default:'—' }}</span><br><span class="muted">{{ hit.city }}{% if hit.city and hit.country %}, {% endif %}{{ hit.country }}</span></td><td><span class="path mono" title="{{ hit.path }}">{{ hit.method }} {{ hit.path }}</span><span class="muted">{{ hit.response_ms }} ms</span></td><td><span class="badge {% if hit.status_code >= 400 %}error{% else %}ok{% endif %}">{{ hit.status_code }}</span></td><td>{{ hit.browser }} / {{ hit.device_type }}{% if hit.is_bot %} <span class="badge bot">bot</span>{% endif %}</td><td><span class="badge {{ hit.severity }}">{{ hit.risk_score }}</span></td><td>{{ hit.requests_per_minute }}</td></tr>{% empty %}<tr><td colspan="8"><div class="empty">No hay peticiones que coincidan con estos filtros.</div></td></tr>{% endfor %}</tbody></table></div>
+</section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+    const live = document.getElementById('dashboard-live');
+    const status = document.getElementById('live-status');
+    const statusText = status.querySelector('span');
+    const refreshButton = document.getElementById('refresh-dashboard');
+    const dataUrl = "{% url 'analytics:dashboard_data' %}";
+    let refreshing = false;
+    let lastRefresh = Date.now();
+    let trafficMap = null;
+    let regionNames = null;
+    let relativeTime = null;
+    try { regionNames = new Intl.DisplayNames(['es'], {type: 'region'}); } catch (error) {}
+    try { relativeTime = new Intl.RelativeTimeFormat('es', {numeric: 'auto'}); } catch (error) {}
+
+    function escapeHTML(value) {
+        return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
+            return {'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[character];
+        });
+    }
+
+    function countryName(code) {
+        try { return regionNames ? (regionNames.of(code) || code) : code; } catch (error) { return code; }
+    }
+
+    function lastSeenLabel(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return 'desconocida';
+        const seconds = Math.round((date.getTime() - Date.now()) / 1000);
+        const ranges = [[86400, 'day'], [3600, 'hour'], [60, 'minute']];
+        for (const range of ranges) {
+            if (Math.abs(seconds) >= range[0]) {
+                const amount = Math.round(seconds / range[0]);
+                return relativeTime ? relativeTime.format(amount, range[1]) : date.toLocaleString('es');
+            }
+        }
+        return relativeTime ? relativeTime.format(seconds, 'second') : 'ahora';
+    }
+
+    function mapTooltip(item) {
+        return '<div class="map-tooltip-content">' +
+            '<div class="map-tooltip-title"><span class="map-tooltip-code">' + escapeHTML(item.country) + '</span>' + escapeHTML(countryName(item.country)) + '</div>' +
+            '<div class="map-tooltip-grid">' +
+            '<span>Vistas<b>' + item.views + '</b></span>' +
+            '<span>Visitantes<b>' + item.visitors + '</b></span>' +
+            '<span>Bots<b>' + item.bot_percent + '%</b></span>' +
+            '<span>Amenazas<b>' + item.threats + '</b></span>' +
+            '<span>Respuesta media<b>' + item.average_response + ' ms</b></span>' +
+            '<span>Última señal<b>' + escapeHTML(lastSeenLabel(item.last_seen)) + '</b></span>' +
+            '</div></div>';
+    }
+
+    function initWorldMap(root, viewport) {
+        const mapElement = root.querySelector('#traffic-world-map');
+        const dataElement = root.querySelector('#traffic-map-data');
+        if (!mapElement || !dataElement) return;
+        if (trafficMap) {
+            trafficMap.destroy();
+            trafficMap = null;
+        }
+        if (!window.jsVectorMap) {
+            mapElement.innerHTML = '<div class="map-empty">No se ha podido cargar el mapa vectorial. Las métricas siguen disponibles a la derecha.</div>';
+            return;
+        }
+        let locations = [];
+        try { locations = JSON.parse(dataElement.textContent); } catch (error) {}
+        const byCountry = {};
+        const values = {};
+        const maximum = Math.max.apply(null, locations.map(function (item) { return item.views; }).concat([1]));
+        locations.forEach(function (item) {
+            byCountry[item.country] = item;
+            values[item.country] = item.views;
+        });
+        mapElement.replaceChildren();
+        trafficMap = new jsVectorMap({
+            selector: '#traffic-world-map',
+            map: 'world',
+            backgroundColor: 'transparent',
+            draggable: true,
+            zoomButtons: true,
+            zoomOnScroll: false,
+            showTooltip: true,
+            regionStyle: {
+                initial: {fill: '#172a3e', stroke: '#38536f', strokeWidth: 0.55, fillOpacity: 1},
+                hover: {fill: '#286eb6', fillOpacity: 1, cursor: 'pointer'}
+            },
+            markerStyle: {
+                initial: {r: 7, fill: '#fbbc05', stroke: '#ffffff', strokeWidth: 2.5, strokeOpacity: 0.72},
+                hover: {fill: '#ffffff', stroke: '#1a73e8', strokeWidth: 4, cursor: 'pointer'}
+            },
+            markers: locations.map(function (item) {
+                return {
+                    name: countryName(item.country),
+                    coords: [item.latitude, item.longitude],
+                    style: {initial: {
+                        r: 6 + Math.round(item.views / maximum * 5),
+                        fill: item.bot_percent >= 50 ? '#ff6577' : '#fbbc05'
+                    }}
+                };
+            }),
+            visualizeData: {scale: ['#1b3651', '#1a73e8'], values: values},
+            onRegionTooltipShow: function (event, tooltip, code) {
+                const item = byCountry[code];
+                if (item) tooltip.text(mapTooltip(item), true);
+                else tooltip.text('<div class="map-tooltip-empty"><b>' + escapeHTML(countryName(code)) + '</b><br>Sin actividad para estos filtros</div>', true);
+            },
+            onMarkerTooltipShow: function (event, tooltip, index) {
+                const item = locations[Number(index)];
+                if (item) tooltip.text(mapTooltip(item), true);
+            }
+        });
+        if (viewport && [viewport.scale, viewport.transX, viewport.transY].every(Number.isFinite)) {
+            trafficMap.scale = viewport.scale;
+            trafficMap.transX = viewport.transX;
+            trafficMap.transY = viewport.transY;
+            trafficMap._applyTransform();
+        }
+    }
+
+    function mapViewport() {
+        if (!trafficMap) return null;
+        return {
+            scale: trafficMap.scale,
+            transX: trafficMap.transX,
+            transY: trafficMap.transY
+        };
+    }
+
+    function replaceIfChanged(current, next) {
+        if (!current || !next || current.outerHTML === next.outerHTML) return current;
+        const replacement = document.importNode(next, true);
+        current.replaceWith(replacement);
+        return replacement;
+    }
+
+    function patchGeography(current, next) {
+        const viewport = mapViewport();
+        replaceIfChanged(
+            current.querySelector('.map-panel > .panel-head'),
+            next.querySelector('.map-panel > .panel-head')
+        );
+        replaceIfChanged(current.querySelector('aside.panel'), next.querySelector('aside.panel'));
+
+        const currentData = current.querySelector('#traffic-map-data');
+        const nextData = next.querySelector('#traffic-map-data');
+        if (!currentData || !nextData || currentData.textContent === nextData.textContent) return;
+        currentData.textContent = nextData.textContent;
+        initWorldMap(live, viewport);
+    }
+
+    function patchDashboard(nextLive) {
+        Array.from(nextLive.children).forEach(function (nextBlock) {
+            const key = nextBlock.dataset.liveKey;
+            if (!key) return;
+            const currentBlock = Array.from(live.children).find(function (block) {
+                return block.dataset.liveKey === key;
+            });
+            if (!currentBlock) {
+                live.appendChild(document.importNode(nextBlock, true));
+            } else if (key === 'geography') {
+                patchGeography(currentBlock, nextBlock);
+            } else {
+                replaceIfChanged(currentBlock, nextBlock);
+            }
+        });
+    }
+
+    const helpTooltip = document.body.appendChild(document.createElement('div'));
+    helpTooltip.className = 'floating-help-tooltip';
+    helpTooltip.setAttribute('role', 'tooltip');
+
+    function showHelpTooltip(trigger) {
+        const content = trigger.querySelector('.tooltip-card');
+        if (!content) return;
+        helpTooltip.textContent = content.textContent;
+        helpTooltip.classList.add('visible');
+        const triggerRect = trigger.getBoundingClientRect();
+        const tooltipRect = helpTooltip.getBoundingClientRect();
+        let left = Math.min(window.innerWidth - tooltipRect.width - 12, Math.max(12, triggerRect.right - tooltipRect.width));
+        let top = triggerRect.bottom + 9;
+        if (top + tooltipRect.height > window.innerHeight - 12) top = triggerRect.top - tooltipRect.height - 9;
+        helpTooltip.style.left = left + 'px';
+        helpTooltip.style.top = Math.max(12, top) + 'px';
+    }
+
+    function hideHelpTooltip() { helpTooltip.classList.remove('visible'); }
+    document.addEventListener('mouseover', function (event) {
+        const trigger = event.target.closest('.info-tip');
+        if (trigger) showHelpTooltip(trigger);
+    });
+    document.addEventListener('mouseout', function (event) {
+        const trigger = event.target.closest('.info-tip');
+        if (trigger && !trigger.contains(event.relatedTarget)) hideHelpTooltip();
+    });
+    document.addEventListener('focusin', function (event) {
+        const trigger = event.target.closest('.info-tip');
+        if (trigger) showHelpTooltip(trigger);
+    });
+    document.addEventListener('focusout', function (event) {
+        if (event.target.closest('.info-tip')) hideHelpTooltip();
+    });
+
+    function decorateCountries(root) {
+        root.querySelectorAll('[data-country-label]').forEach(function (element) {
+            const code = element.dataset.countryLabel;
+            if (regionNames) element.textContent = regionNames.of(code) || code;
+        });
+        root.querySelectorAll('[data-country-flag]').forEach(function (element) {
+            const code = element.dataset.countryFlag;
+            element.textContent = /^[A-Z]{2}$/.test(code) ? code : '—';
+        });
+    }
+
+    document.querySelectorAll('.filters select').forEach(function (element) {
+        element.addEventListener('change', function () { element.form.submit(); });
+    });
+
+    async function refreshDashboard() {
+        if (refreshing || document.hidden) return;
+        refreshing = true;
+        live.setAttribute('aria-busy', 'true');
+        refreshButton.disabled = true;
+        statusText.textContent = 'Actualizando…';
+        try {
+            const response = await fetch(dataUrl + window.location.search, {
+                credentials: 'same-origin',
+                cache: 'no-store',
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            });
+            const contentType = response.headers.get('content-type') || '';
+            if (!response.ok || !contentType.includes('application/json')) {
+                throw new Error('La sesión ha caducado o el servidor no respondió');
+            }
+            const payload = await response.json();
+            const snapshot = new DOMParser().parseFromString(payload.html, 'text/html');
+            const nextLive = snapshot.getElementById('dashboard-live');
+            if (!nextLive) throw new Error('Respuesta incompleta');
+            patchDashboard(nextLive);
+            decorateCountries(live);
+            status.classList.remove('down');
+            statusText.textContent = 'Actualizado ahora';
+            lastRefresh = Date.now();
+        } catch (error) {
+            status.classList.add('down');
+            statusText.textContent = 'Sin conexión · reintentar';
+        } finally {
+            live.removeAttribute('aria-busy');
+            refreshButton.disabled = false;
+            refreshing = false;
+        }
+    }
+
+    refreshButton.addEventListener('click', refreshDashboard);
+    decorateCountries(document);
+    initWorldMap(document);
+    window.setInterval(refreshDashboard, 15000);
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && Date.now() - lastRefresh > 15000) refreshDashboard();
+    });
+})();
+</script>
+{% endblock %}

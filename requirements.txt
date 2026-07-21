@@ -37,6 +37,7 @@ python-dotenv==1.0.1
 pytz==2024.1
 requests==2.31.0
 requests-oauthlib==2.0.0
+redis>=5,<7
 six==1.16.0
 soupsieve==2.5
 sqlparse==0.5.0

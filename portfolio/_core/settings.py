@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     # Program's apps:
     'main',
     'blog',
+    'analytics',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Records public traffic after authentication is available, so staff and
+    # the private dashboard can be excluded safely.
+    'analytics.middleware.VisitTrackingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -134,6 +138,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Authentication for /admin/ and the private Trace dashboard must never travel
+# over plaintext in production. Keep local HTTP development convenient.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -192,3 +203,55 @@ TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverif
 
 # Change default verification timeout:
 TURNSTILE_TIMEOUT = 5
+
+
+# Private, first-party traffic analytics. Proxy headers are only accepted from
+# these addresses/networks to prevent visitors spoofing their IP or location.
+ANALYTICS_ENABLED = os.getenv('ANALYTICS_ENABLED', 'True') == 'True'
+ANALYTICS_RETENTION_DAYS = int(os.getenv('ANALYTICS_RETENTION_DAYS', '90'))
+ANALYTICS_RATE_LIMIT_PER_MINUTE = int(
+    os.getenv('ANALYTICS_RATE_LIMIT_PER_MINUTE', '60')
+)
+# Once an IP exceeds this multiple of the rate threshold, only one in every ten
+# requests is persisted. The peak remains visible without letting an attack
+# amplify database writes indefinitely.
+ANALYTICS_ATTACK_SAMPLE_MULTIPLIER = int(
+    os.getenv('ANALYTICS_ATTACK_SAMPLE_MULTIPLIER', '3')
+)
+ANALYTICS_TRUSTED_PROXIES = [
+    item.strip()
+    for item in os.getenv(
+        'ANALYTICS_TRUSTED_PROXIES',
+        # 192.168.2.104 is the verified origin proxy for this deployment.
+        '127.0.0.1,::1,192.168.2.104',
+    ).split(',')
+    if item.strip()
+]
+ANALYTICS_EXCLUDED_PATHS = (
+    '/admin/',
+    '/ops/trace/',
+    '/static/',
+    '/media/',
+    '/favicon.ico',
+)
+
+# Gunicorn runs multiple workers. A shared Redis cache makes rate and alert
+# deduplication counters consistent across every worker. Analytics handles a
+# cache outage gracefully, so Redis can never take down the public site.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'portfolio-default',
+    },
+    'analytics': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': os.getenv(
+            'ANALYTICS_REDIS_URL', 'redis://127.0.0.1:6379/2'
+        ),
+        'OPTIONS': {
+            'socket_connect_timeout': 1,
+            'socket_timeout': 1,
+        },
+        'KEY_PREFIX': 'trace',
+    },
+}
