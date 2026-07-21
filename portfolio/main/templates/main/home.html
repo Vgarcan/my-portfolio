@@ -42,11 +42,15 @@ Inject HTML for the content
                 <h3 class="card-subtitle mb-4">Web Developer</h3>
                 <blockquote class="card-text mb-4">"With coffee by my side, your problems won’t survive."</blockquote>
                 <div class="d-flex gap-3" id="social-links">
-                    <a href="https://www.linkedin.com/in/vgc89/" target="_blank">
-                        <i class="fa-brands fa-linkedin-in"></i>
+                    <a href="https://www.linkedin.com/in/vgc89/">
+                        <i class="fa-brands fa-linkedin-in">
+                            <p class="d-none">Go to Linkedin</p>
+                        </i>
                     </a>
-                    <a href="https://github.com/Vgarcan" target="_blank">
-                        <i class="fa-brands fa-github"></i>
+                    <a href="https://github.com/Vgarcan">
+                        <i class="fa-brands fa-github">
+                            <p class="d-none">Go to Github</p>
+                        </i>
                     </a>
                 </div>
                 <a href="path-to-your-resume.pdf" class="btn btn-primary btn-lg mt-4" download>Download Resume</a>
@@ -80,7 +84,9 @@ Inject HTML for the content
         </div>
         <div class="row mt-5 h-100">
             <h2 class="text-center mb-4">My Approach</h2>
-            <img class="col-md-6 my-1" id="lapdog" src="{% static 'imgs/lapdog-alpha.png' %}" alt="">
+            <div class="relative col-md-6 my-1">
+                <img class="img-fluid" id="lapdog" src="{% static 'imgs/lapdog-alpha.png' %}" alt="dog with a laptop">
+            </div>
             <div class="col-md-6 my-3 d-flex flex-column align-items-center justify-content-center text-center">
                 <p>
                     My approach combines technical expertise, creativity, and a deep understanding of client needs. By prioritising <strong>clear communication</strong> and <strong>active collaboration</strong>, I ensure that every project is aligned
@@ -173,11 +179,11 @@ Inject HTML for the content
             <div class="col-md-4 mb-3">
                 <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
                     <img src="{% static 'imgs/projs/dreamsreader-pic.png' %}" class="card-img-top" alt="Project 1">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">DreamsReader</h5>
                         <p class="card-text">Static App for a platform that allows users to explore and share their dreams </p>
                         <br>
-                        <div class="container">
+                        <div class="container mt-auto">
                             <a href="https://ambitious-bush-0d5afce1e.4.azurestaticapps.net/" class="btn btn-primary my-2" target="_blank">View Project</a>
                             <a href="https://github.com/Vgarcan/CodeInstitute-proj01" class="btn btn-secondary my-2" target="_blank">Source Code</a>
                         </div>
@@ -188,11 +194,11 @@ Inject HTML for the content
             <div class="col-md-4 mb-3">
                 <div class="card shadow d-flex flex-column align-items-center justify-content-center text-center h-100">
                     <img src="{% static 'imgs/projs/limonxemo-pic.png' %}" class="card-img-top" alt="Project 2">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">LimonXemo</h5>
                         <p class="card-text">My personal Music Player created with JavaScript.</p>
                         <br>
-                        <div class="container">
+                        <div class="container mt-auto">
                             <a href="https://vgarcan.github.io/CodeInstitute-proj02/" class="btn btn-primary my-2" target="_blank">View Project</a>
                             <a href="https://github.com/Vgarcan/CodeInstitute-proj02" class="btn btn-secondary my-2" target="_blank">Source Code</a>
                         </div>
@@ -207,7 +213,7 @@ Inject HTML for the content
                         <h5 class="card-title">XemiJobs</h5>
                         <p class="card-text">A job search platform designed to connect employers with potential candidates..</p>
                         <br>
-                        <div class="container">
+                        <div class="container mt-auto">
                             <a href="https://xemijobs-616b41a185c0.herokuapp.com/" class="btn btn-primary my-2" target="_blank">View Project</a>
                             <a href="https://github.com/Vgarcan/CodeInstitute-proj03-v002" class="btn btn-secondary my-2" target="_blank">Source Code</a>
                         </div>
@@ -293,7 +299,7 @@ Inject HTML for the content
                 <div class="card gradient-custom">
                     <div class="card-body p-4">
                         <i class="fas fa-laptop-code fa-2x mb-3"></i>
-                        <h4>2024 - Act</h4>
+                        <h4>2024 - 2025</h4>
                         <p class="small text-white-50 mb-4">CAVC & CodeInstitute</p>
                         <p>Level 5 Diploma in Web Application Development (PLA)<br> - Frontend: HTML, CSS, JavaScript, Interactive Dev, Testing (JEST)<br> - Backend: Python, Flask, Django, DBs.
                         </p>

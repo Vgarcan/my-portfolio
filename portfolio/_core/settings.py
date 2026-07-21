@@ -28,17 +28,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get(('DEBUG'), False))
-print(
-    f"DEBUG MODE: {DEBUG}",
-)
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+print(DEBUG)
 
 ALLOWED_HOSTS = [
+    '192.168.2.116',
     'localhost',
     'ineedtohirethisguy.com',
     'www.ineedtohirethisguy.com',
     '127.0.0.1',
-    '192.168.2.199'
+    '192.168.2.199',
 ]
 
 # Add domain to the list of trusted origins so that Django accepts requests from that domain

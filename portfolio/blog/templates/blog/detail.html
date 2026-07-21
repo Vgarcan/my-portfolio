@@ -31,7 +31,7 @@ Details Post
     <!-- Blog Meta Information -->
     <p class="text-muted text-center">
         Posted on {{ post.created_on|date:"M d, Y" }} | Category: 
-        <a href="{% url 'category_detail' post.category.slug %}" class="text-decoration-none">
+        <a href="{% url 'blog:category_detail' post.category.slug %}" class="text-decoration-none">
             {{ post.category.name }}
         </a>
     </p>

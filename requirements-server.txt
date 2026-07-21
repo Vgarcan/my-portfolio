@@ -31,7 +31,7 @@ Mezzanine
 oauthlib
 packaging
 pillow
-psycopg2
+# psycopg2
 psycopg2-binary
 python-dotenv
 pytz
